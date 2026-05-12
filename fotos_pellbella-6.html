@@ -1277,23 +1277,27 @@ function ensureApiKey() {
 }
 
 async function alignPhotosWithAI(dataUrlAntes, dataUrlDespues) {
-  if(!ensureApiKey()) return { antes:{x:0,y:0,w:1,h:1}, despues:{x:0,y:0,w:1,h:1} };
-  // Convertir dataUrls a base64 puro
+  if(!ensureApiKey()) return { antes:{x:0,y:0,w:1,h:1,scale:1}, despues:{x:0,y:0,w:1,h:1,scale:1} };
   const b64Antes   = dataUrlAntes.split(',')[1];
   const b64Despues = dataUrlDespues.split(',')[1];
 
-  const prompt = `Analiza estas dos fotos de seguimiento estético (antes y después de un tratamiento corporal).
-Tu tarea es determinar las coordenadas de recorte para que ambas fotos muestren exactamente la misma zona corporal con el mismo encuadre.
+  const prompt = `Analiza estas dos fotos de seguimiento estético corporal (antes y después de un tratamiento).
+Identifica la zona corporal común visible en ambas fotos.
 
-Devuelve SOLO un JSON con este formato exacto (sin texto adicional):
+Tu tarea: determinar cómo recortar y escalar cada foto para que ambas muestren exactamente la misma zona corporal al mismo tamaño aparente.
+
+Devuelve SOLO un JSON con este formato exacto (sin texto adicional, sin markdown):
 {
   "antes": { "x": 0.0, "y": 0.0, "w": 1.0, "h": 1.0 },
-  "despues": { "x": 0.0, "y": 0.0, "w": 1.0, "h": 1.0 }
+  "despues": { "x": 0.0, "y": 0.0, "w": 1.0, "h": 1.0 },
+  "explicacion": "breve descripción de qué zona corporal detectaste y qué ajustes hiciste"
 }
 
-Donde x, y, w, h son valores entre 0 y 1 representando la fracción de la imagen original a recortar.
-x=0,y=0 es esquina superior izquierda. w=1,h=1 significa imagen completa.
-Ajusta los valores para que ambas fotos muestren la misma zona corporal al mismo tamaño.`;
+Reglas:
+- x, y, w, h son fracciones de 0 a 1 (x=0,y=0 es esquina superior izquierda)
+- Recorta la zona común: si una foto tiene más fondo/contexto, recórtala para que coincida con la más ajustada
+- Si una foto está muy alejada y la otra muy cerca, recorta la alejada para centrarte solo en la zona corporal visible en la cercana
+- El resultado de ambos recortes debe mostrar la misma zona corporal al mismo nivel de zoom relativo`;
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1306,7 +1310,7 @@ Ajusta los valores para que ambas fotos muestren la misma zona corporal al mismo
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 200,
+        max_tokens: 300,
         messages: [{
           role: 'user',
           content: [
@@ -1319,29 +1323,28 @@ Ajusta los valores para que ambas fotos muestren la misma zona corporal al mismo
     });
     const data = await resp.json();
     const text = data.content?.[0]?.text || '';
+    console.log('IA respuesta:', text);
     const json = JSON.parse(text.replace(/```json|```/g,'').trim());
     return json;
   } catch(e) {
-    console.warn('IA alineación falló, usando encuadre completo:', e.message);
-    return {
-      antes:   { x:0, y:0, w:1, h:1 },
-      despues: { x:0, y:0, w:1, h:1 }
-    };
+    console.warn('IA alineación falló:', e.message);
+    return { antes:{x:0,y:0,w:1,h:1}, despues:{x:0,y:0,w:1,h:1} };
   }
 }
 
-function cropImageToBlob(dataUrl, crop) {
+// Recorta imagen y la escala a tamaño fijo para comparativa uniforme
+function cropImageToBlob(dataUrl, crop, targetW, targetH) {
   return new Promise(resolve => {
     const img = new Image();
     img.onload = () => {
-      const cnv = document.createElement('canvas');
       const srcX = Math.round(crop.x * img.width);
       const srcY = Math.round(crop.y * img.height);
       const srcW = Math.round(crop.w * img.width);
       const srcH = Math.round(crop.h * img.height);
-      cnv.width  = srcW;
-      cnv.height = srcH;
-      cnv.getContext('2d').drawImage(img, srcX, srcY, srcW, srcH, 0, 0, srcW, srcH);
+      const cnv = document.createElement('canvas');
+      cnv.width  = targetW || srcW;
+      cnv.height = targetH || srcH;
+      cnv.getContext('2d').drawImage(img, srcX, srcY, srcW, srcH, 0, 0, cnv.width, cnv.height);
       cnv.toBlob(resolve, 'image/jpeg', 0.92);
     };
     img.src = dataUrl;
@@ -1384,8 +1387,10 @@ async function uploadSeguimiento() {
       showStatus('statusB2','Generando comparativa alineada...', false);
 
       // Recortar ambas fotos según las instrucciones de la IA
-      const blobAntesRecortado   = await cropImageToBlob(refDataUrl,        crops.antes);
-      const blobDespuesRecortado = await cropImageToBlob(capturedDataUrl.B, crops.despues);
+      // Tamaño uniforme para ambas: 800x1000px para comparativa alineada
+      const TARGET_W = 800, TARGET_H = 1000;
+      const blobAntesRecortado   = await cropImageToBlob(refDataUrl,        crops.antes,   TARGET_W, TARGET_H);
+      const blobDespuesRecortado = await cropImageToBlob(capturedDataUrl.B, crops.despues, TARGET_W, TARGET_H);
 
       // Generar URLs para la comparativa
       const urlAntesRec   = URL.createObjectURL(blobAntesRecortado);
