@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Diagnóstico Pellbella</title>
+</head>
+<body>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap');
+
+:root{
+  --cream:#faf8f5;
+  --gold:#c9a96e;
+  --gold-light:#e8d5b0;
+  --dark:#1c1c1c;
+  --mid:#5a5a5a;
+  --light:#9a9a9a;
+  --border:#e8e2d9;
+  --white:#ffffff;
+  --selected-bg:#f7f2eb;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--cream);min-height:100vh;}
+
+.pw{max-width:600px;margin:0 auto;padding:2rem 1.25rem 4rem;font-family:'Jost',sans-serif;}
+
+/* HEADER */
+.ph{text-align:center;margin-bottom:2.5rem;padding-top:0.5rem;}
+.plogo{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--dark);letter-spacing:6px;line-height:1;}
+.psub{font-size:11px;color:var(--light);margin-top:8px;letter-spacing:2px;text-transform:uppercase;}
+
+/* LANG */
+.plang{display:flex;gap:6px;justify-content:center;margin-bottom:2rem;}
+.lang-btn{padding:6px 18px;border-radius:20px;font-size:12px;letter-spacing:1px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--light);font-family:'Jost',sans-serif;transition:all 0.2s;}
+.lang-btn.active{background:var(--dark);color:var(--white);border-color:var(--dark);}
+
+/* PROGRESS */
+.pprog{height:1px;background:var(--border);margin-bottom:2.5rem;}
+.pprogb{height:1px;background:var(--gold);transition:width 0.5s ease;}
+
+/* STEPS */
+.pstep{display:none;animation:fadeIn 0.3s ease;}
+.pstep.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.pqcat{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:1rem;}
+.pq{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--dark);margin-bottom:0.25rem;line-height:1.3;}
+
+/* OPTIONS */
+.popts{display:flex;flex-direction:column;gap:8px;margin-top:1.5rem;}
+.popt{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 18px;
+  border:1px solid var(--border);
+  border-radius:4px;
+  cursor:pointer;
+  background:var(--white);
+  transition:all 0.2s;
+}
+.popt:hover{border-color:var(--gold-light);background:var(--selected-bg);}
+.popt.selected{border-color:var(--gold);background:var(--selected-bg);}
+.poc{
+  width:18px;height:18px;border-radius:50%;
+  border:1px solid var(--border);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.popt.selected .poc{background:var(--gold);border-color:var(--gold);}
+.pod{width:6px;height:6px;border-radius:50%;background:var(--white);display:none;}
+.popt.selected .pod{display:block;}
+.potxt{font-size:15px;color:var(--dark);line-height:1.4;font-weight:400;}
+.posub{font-size:12px;color:var(--light);margin-top:2px;font-weight:300;}
+.pmhint{font-size:11px;color:var(--light);margin-top:1rem;letter-spacing:0.5px;}
+
+/* NAV */
+.pnav{display:flex;justify-content:space-between;align-items:center;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+.pbtn{
+  padding:11px 28px;border-radius:2px;
+  font-size:12px;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;border:1px solid var(--border);
+  background:transparent;color:var(--mid);
+  font-family:'Jost',sans-serif;transition:all 0.2s;
+}
+.pbtn:hover{border-color:var(--mid);color:var(--dark);}
+.pbtn-p{background:var(--dark);color:var(--white);border-color:var(--dark);}
+.pbtn-p:hover{background:var(--gold);border-color:var(--gold);}
+.pbtn:disabled{opacity:0.25;cursor:not-allowed;}
+.psc{font-size:11px;color:var(--light);letter-spacing:1px;}
+
+/* INPUT TEXT */
+.pinput{
+  width:100%;padding:14px 16px;
+  border:1px solid var(--border);border-radius:4px;
+  font-size:16px;margin-top:1.25rem;
+  background:var(--white);color:var(--dark);
+  font-family:'Jost',sans-serif;
+  transition:border-color 0.2s;
+  -webkit-appearance:none;
+}
+.pinput:focus{outline:none;border-color:var(--gold);}
+
+/* SLIDERS */
+.slider-group{margin-top:1.75rem;}
+.slider-item{margin-bottom:2rem;padding:1.25rem;background:var(--white);border:1px solid var(--border);border-radius:4px;}
+.slider-label{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:4px;letter-spacing:0.5px;}
+.slider-desc{font-size:12px;color:var(--light);margin-bottom:1rem;line-height:1.5;}
+.slider-row{display:flex;align-items:center;gap:12px;}
+.sl{
+  flex:1;height:2px;-webkit-appearance:none;appearance:none;
+  background:var(--border);border-radius:1px;outline:none;cursor:pointer;
+}
+.sl::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+.sl::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:none;}
+.sl-val{font-size:18px;font-weight:300;color:var(--dark);min-width:20px;text-align:center;font-family:'Cormorant Garamond',serif;}
+.sl-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--light);margin-top:6px;}
+
+/* VOL SLIDER */
+.vol-display{
+  text-align:center;margin-top:1.5rem;padding:1.5rem;
+  border:1px solid var(--gold-light);border-radius:4px;
+  background:linear-gradient(135deg,#fdf9f3,#f7f2eb);
+}
+.vol-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--gold);line-height:1;}
+.vol-unit{font-size:11px;color:var(--light);margin-top:4px;letter-spacing:1.5px;text-transform:uppercase;}
+.vol-desc{font-size:13px;color:var(--mid);margin-top:10px;line-height:1.5;}
+.vol-sessions{margin-top:12px;font-size:13px;font-weight:500;color:var(--dark);letter-spacing:0.5px;}
+.vol-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--light);margin-bottom:0.5rem;}
+.vol-slider{width:100%;height:2px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:1px;outline:none;cursor:pointer;}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--gold);cursor:pointer;border:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+.vol-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--gold);cursor:pointer;border:none;}
+
+/* RETURN SCREEN */
+.return-screen{text-align:center;padding:4rem 1rem 2rem;}
+.return-icon{font-size:52px;margin-bottom:1.5rem;color:var(--gold);}
+.return-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--dark);margin-bottom:1rem;}
+.return-sub{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:2.5rem;}
+.pin-section{margin-top:2rem;}
+.pin-label{font-size:11px;color:var(--light);margin-bottom:1rem;letter-spacing:1px;text-transform:uppercase;}
+.pin-input{display:flex;gap:10px;justify-content:center;}
+.pin-digit{
+  width:56px;height:64px;
+  border:1px solid var(--border);border-radius:4px;
+  font-size:26px;font-weight:300;text-align:center;
+  background:var(--white);color:var(--dark);
+  font-family:'Cormorant Garamond',serif;
+  -webkit-appearance:none;
+}
+.pin-digit:focus{outline:none;border-color:var(--gold);}
+.pin-err{font-size:12px;color:#c0392b;margin-top:1rem;min-height:20px;text-align:center;}
+
+/* RESULTS */
+.result-screen{display:none;}
+.result-screen.active{display:block;}
+.rh{text-align:center;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.rh-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--dark);margin-bottom:6px;}
+.rh-sub{font-size:11px;color:var(--light);letter-spacing:1.5px;text-transform:uppercase;}
+
+.rsect{font-size:10px;font-weight:500;color:var(--gold);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:1rem;}
+.rcard{border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1rem;background:var(--white);}
+.rcard.featured{border:1.5px solid var(--gold);background:linear-gradient(135deg,#fdf9f3,var(--white));}
+
+.rbadge{
+  display:inline-block;font-size:10px;padding:4px 12px;
+  border-radius:20px;letter-spacing:1px;text-transform:uppercase;
+  background:var(--border);color:var(--mid);margin-bottom:1rem;
+}
+.rcard.featured .rbadge{background:var(--gold);color:var(--white);}
+.rname{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--dark);margin-bottom:0.5rem;}
+.rinc{font-size:13px;color:var(--mid);margin-bottom:1rem;line-height:1.7;}
+.rsci{
+  font-size:12px;color:var(--mid);
+  background:var(--cream);
+  border-left:2px solid var(--gold-light);
+  padding:10px 14px;border-radius:0 4px 4px 0;
+  margin-bottom:1rem;line-height:1.6;
+}
+.rsci-lbl{font-size:10px;font-weight:500;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.rprice{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--dark);}
+.rpricesub{font-size:12px;color:var(--light);margin-top:2px;}
+.rdiv{height:1px;background:var(--border);margin:2rem 0;}
+.rnote{font-size:12px;color:var(--light);text-align:center;margin-top:1.5rem;line-height:1.7;font-style:italic;}
+.pill{display:inline-flex;padding:4px 12px;border-radius:20px;font-size:12px;background:var(--cream);color:var(--mid);border:1px solid var(--border);margin:2px;}
+.pill.hl{background:var(--gold);color:var(--white);border-color:var(--gold);}
+
+/* MOTIVATION */
+.motivation-box{border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem;background:var(--white);}
+.motivation-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.motivation-label{font-size:12px;color:var(--mid);}
+.motivation-val{font-size:13px;font-weight:500;color:var(--dark);}
+.motivation-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:1.25rem;}
+.motivation-fill{height:3px;background:var(--gold);border-radius:2px;transition:width 0.4s;}
+
+@keyframes blink{0%,80%,100%{opacity:0;}40%{opacity:1;}}
+</style>
+
+<div class="pw">
+  <div class="plang">
+    <button class="lang-btn active" onclick="setLang('es',event)">Castellano</button>
+    <button class="lang-btn" onclick="setLang('ca',event)">Català</button>
+  </div>
+  <div class="ph">
+    <div class="plogo">pb</div>
+    <div class="psub" id="lbl-sub">Diagnóstico personalizado · Primera visita</div>
+  </div>
+  <div class="pprog"><div class="pprogb" id="prog" style="width:0%"></div></div>
+  <div id="steps-wrap"></div>
+  <div id="return-wrap" style="display:none"></div>
+  <div class="result-screen" id="result-wrap"></div>
+</div>
+
+<script>
+const PIN='1234';
+const SCIENCE={
+  criox:{es:'La criolipólisis aplica frío controlado (-5°C a -10°C) que induce apoptosis selectiva de los adipocitos sin dañar tejidos circundantes. El cuerpo elimina las células destruidas en 4-12 semanas a través del sistema linfático, con una reducción demostrada de hasta el 25% del tejido graso por zona tratada. La respuesta es acumulativa: a mayor número de sesiones, mayor volumen de adipocitos eliminados.',ca:'La criolipòlisi aplica fred controlat que indueix apoptosi selectiva dels adipòcits. El cos elimina les cèl·lules destruïdes en 4-12 setmanes a través del sistema limfàtic, amb una reducció de fins al 25% del teixit gras per zona. La resposta és acumulativa: a major nombre de sessions, major volum eliminat.'},
+  endo:{es:'La vacumterapia genera un vacío mecánico que descomprime estructuras vasculares y linfáticas colapsadas —causa principal de la celulitis— restaurando la microcirculación. El movimiento multidireccional del cabezal estimula fibroblastos y favorece la síntesis de colágeno, elastina y ácido hialurónico, con resultados visibles desde la primera sesión.',ca:'La vacumteràpia genera un buit mecànic que descomprimeix estructures vasculars i limfàtiques col·lapsades —causa principal de la cel·lulitis— restaurant la microcirculació. Estimula fibroblasts i afavoreix la síntesi de col·lagen, elastina i àcid hialurònic.'},
+  ems:{es:'La EMS genera contracciones musculares supramaximales mediante impulsos eléctricos directos a las fibras musculares —hasta 36.000 contracciones en 30 minutos— equivalentes a horas de ejercicio intenso. Aumenta la masa muscular, mejora el tono y el metabolismo basal con efectos visibles en 4-6 semanas.',ca:"L'EMS genera contraccions musculars supramaximals mitjançant impulsos elèctrics directes —fins a 36.000 contraccions en 30 minuts. Augmenta la massa muscular, millora el to i el metabolisme basal."},
+  rfcorp:{es:'La radiofrecuencia corporal genera calor interno a 40-45°C que activa fibroblastos e incrementa la síntesis de colágeno tipo I y III, mejorando elasticidad y firmeza. Especialmente eficaz para reafirmar la piel tras la pérdida de volumen.',ca:'La radiofreqüència corporal genera calor intern a 40-45°C que activa fibroblasts i incrementa la síntesi de col·lagen tipus I i III. Especialment eficaç per reafirmar la pell.'},
+  rffac:{es:'La radiofrecuencia capacitiva facial calienta la dermis a 40-42°C produciendo contracción inmediata de fibras de colágeno —efecto tensor visible al instante— y estimulando la neocolagénesis. Potencia la absorción de activos biológicos hasta un 40% más.',ca:"La radiofreqüència capacitiva facial escalfa la dermis a 40-42°C produint contracció immediata de fibres de col·lagen i estimulant la neocol·lagenogènesi. Potencia l'absorció d'actius biològics fins a un 40% més."},
+  plasma:{es:'El plasma pen sublima con precisión el tejido superficial en el punto exacto sin afectar tejido circundante, provocando microcoagulación controlada que elimina lesiones pigmentadas y estimula la regeneración celular.',ca:'El plasma pen sublima amb precisió el teixit superficial en el punt exacte, provocant microcoagulació controlada que elimina lesions pigmentades i estimula la regeneració cel·lular.'},
+  lipoled:{es:'La luz LED activa la circulación microvascular, estimula la producción de ATP celular y favorece la síntesis de colágeno en la dermis, con resultado de luminosidad inmediata y efecto acumulativo.',ca:"La llum LED activa la circulació microvascular, estimula la producció d'ATP cel·lular i afavoreix la síntesi de col·lagen, amb lluminositat immediata i efecte acumulatiu."},
+  cavi:{es:'Los ultrasonidos de baja frecuencia (40 kHz) generan microburbujas que destruyen selectivamente las membranas de los adipocitos en piernas y brazos. Indicada exclusivamente en zonas de tejido blando accesible.',ca:'Els ultrasons de baixa freqüència (40 kHz) generen microbombolles que destrueixen selectivament les membranes dels adipòcits a cames i braços.'}
+};
+
+const L={
+  es:{
+    sub:'Diagnóstico personalizado · Primera visita',
+    stepOf:(a,b)=>`Pregunta ${a} de ${b}`,
+    next:'Siguiente',prev:'Anterior',finish:'Finalizar',
+    multiHint:'Puedes elegir varias opciones',
+    returnTitle:'Gracias por completar el cuestionario',
+    returnSub:'Por favor, entrega la tablet al personal de Pellbella para recibir tu recomendación personalizada.',
+    returnIcon:'✓',
+    pinLabel:'Código profesional Pellbella',
+    pinErr:'Código incorrecto. Inténtalo de nuevo.',
+    pinHint:'Introduce el código para ver la recomendación',
+    sciLbl:'Por qué funciona',
+    phase1:'Fase 1 · Eliminar la grasa',
+    phase2:'Fase 2 · Alisar y remodelar',
+    phase3:'Fase 3 · Tonificar y reafirmar',
+    crioSess:n=>`${n} sesiones recomendadas`,
+    resultTitle:n=>`Protocolo para ${n}`,
+    resultSub:'Protocolo ordenado por fases · Con base científica',
+    yourData:'Datos del cliente',
+    motivTitle:'Motivación y urgencia',
+    chatTitle:'Asesor nutricional',
+    chatSub:'Consulta sobre alimentación como apoyo al tratamiento',
+    chatWelcome:name=>`Hola ${name}! Soy tu asesor nutricional de Pellbella. ¿En qué puedo ayudarte para complementar tu tratamiento con una alimentación adecuada?`,
+    chatPh:'Escribe tu pregunta...',
+    chatSend:'Enviar',
+    noteLabel:'Protocolo orientativo. El equipo realizará un estudio personalizado completo.',
+    restart:'Nuevo diagnóstico',
+    featuredLbl:n=>`Fase 1 · ${n} sesiones`,
+    phaseLbl:n=>`Fase ${n}`,
+    volUnit:'tallas',
+    volDescs:['Pequeño ajuste de silueta','Mejora clara y definida','Reducción visible, cambio de talla','Cambio importante y significativo'],
+    volSess:n=>`${n} sesiones de criolipólisis necesarias`,
+    motiv1:'Necesidad de mejora',motiv2:'Importancia personal',motiv3:'Urgencia del cambio',
+    motiv1desc:'¿Cuánto necesitas mejorar esta zona?',
+    motiv2desc:'¿Cuánto te importa conseguir este objetivo?',
+    motiv3desc:'¿Con qué urgencia quieres ver los resultados?',
+    motivLow:'Poco',motivHigh:'Mucho',
+    questions:[
+      {id:'name',type:'text',cat:'Bienvenida',q:'¿Cuál es tu nombre?',ph:'Escribe tu nombre...'},
+      {id:'area',type:'single',cat:'Área de interés',q:'¿Qué área te preocupa más?',opts:[
+        {val:'corporal',label:'Mi cuerpo',sub:'Silueta, grasa, celulitis, flacidez...'},
+        {val:'facial',label:'Mi rostro',sub:'Arrugas, manchas, firmeza, luminosidad...'}
+      ]},
+      {id:'corp_zone',type:'multi',cat:'Cuerpo · Zona',q:'¿En qué zonas tienes más problemas?',
+        condition:a=>a.area==='corporal'||a.area==='ambos',
+        opts:[
+          {val:'abdomen',label:'Abdomen y cintura',sub:'Barriga, flancos, exceso de volumen'},
+          {val:'gluteos',label:'Glúteos y caderas',sub:'Glúteos caídos, cartucheras'},
+          {val:'piernas',label:'Piernas y muslos',sub:'Celulitis, retención, pierna pesada'},
+          {val:'brazos',label:'Brazos',sub:'Flacidez, falta de tono'},
+          {val:'general',label:'Todo el cuerpo',sub:'Flacidez general, falta de definición'}
+        ]},
+      {id:'corp_problem',type:'multi',cat:'Cuerpo · Problema',q:'¿Cuál de estos problemas te identifica más?',
+        condition:a=>a.area==='corporal'||a.area==='ambos',
+        opts:[
+          {val:'grasa',label:'Grasa localizada resistente',sub:'No responde a dieta ni ejercicio'},
+          {val:'celulitis',label:'Celulitis y piel de naranja',sub:'Textura irregular, piel rugosa'},
+          {val:'flacidez',label:'Flacidez y piel sobrante',sub:'Piel descolgada, falta de tono'},
+          {val:'retencion',label:'Retención de líquidos',sub:'Piernas pesadas, hinchazón'},
+          {val:'tonificar',label:'Quiero tonificar y definir',sub:'Músculo, firmeza, forma'}
+        ]},
+      {id:'vol_objetivo',type:'slider_vol',cat:'Objetivo · Volumen',q:'¿Cuántas tallas quieres perder?',
+        condition:a=>(a.area==='corporal'||a.area==='ambos')&&(a.corp_problem||[]).includes('grasa')},
+      {id:'motivacion',type:'slider_motiv',cat:'Tu motivación',q:'Valora cómo te sientes con este objetivo'},
+      {id:'face_problem',type:'multi',cat:'Rostro · Problema',q:'¿Cuál de estos problemas faciales te identifica más?',
+        condition:a=>a.area==='facial'||a.area==='ambos',
+        opts:[
+          {val:'arrugas',label:'Arrugas y líneas de expresión',sub:'Patas de gallo, frente, comisuras'},
+          {val:'flacidez_facial',label:'Flacidez y óvalo caído',sub:'Piel descolgada, falta de firmeza'},
+          {val:'manchas',label:'Manchas visibles',sub:'Sol, hormonales, envejecimiento'},
+          {val:'luminosidad',label:'Piel apagada, sin luminosidad',sub:'Quiero un efecto glow'},
+          {val:'evento',label:'Preparación para un evento',sub:'Boda, celebración, ocasión especial'}
+        ]},
+      {id:'age',type:'single',cat:'Sobre ti',q:'¿En qué franja de edad estás?',opts:[
+        {val:'joven',label:'18 - 35 años'},
+        {val:'media',label:'36 - 50 años'},
+        {val:'madura',label:'51 - 65 años'},
+        {val:'senior',label:'Más de 65 años'}
+      ]}
+    ]
+  },
+  ca:{
+    sub:'Diagnòstic personalitzat · Primera visita',
+    stepOf:(a,b)=>`Pregunta ${a} de ${b}`,
+    next:'Següent',prev:'Anterior',finish:'Finalitzar',
+    multiHint:'Pots escollir diverses opcions',
+    returnTitle:'Gràcies per completar el qüestionari',
+    returnSub:'Si us plau, torna la tauleta al personal de Pellbella per rebre la teva recomanació personalitzada.',
+    returnIcon:'✓',
+    pinLabel:'Codi professional Pellbella',
+    pinErr:'Codi incorrecte. Torna-ho a intentar.',
+    pinHint:'Introdueix el codi per veure la recomanació',
+    sciLbl:'Per què funciona',
+    phase1:'Fase 1 · Eliminar el greix',
+    phase2:'Fase 2 · Allisar i remodelar',
+    phase3:'Fase 3 · Tonificar i reafirmar',
+    crioSess:n=>`${n} sessions recomanades`,
+    resultTitle:n=>`Protocol per a ${n}`,
+    resultSub:'Protocol ordenat per fases · Amb base científica',
+    yourData:'Dades del client',
+    motivTitle:'Motivació i urgència',
+    chatTitle:'Assessor nutricional',
+    chatSub:"Consulta sobre alimentació com a suport al tractament",
+    chatWelcome:name=>`Hola ${name}! Sóc el teu assessor nutricional de Pellbella. En què et puc ajudar per complementar el teu tractament amb una alimentació adequada?`,
+    chatPh:'Escriu la teva pregunta...',
+    chatSend:'Enviar',
+    noteLabel:'Protocol orientatiu. L\'equip farà un estudi personalitzat complet.',
+    restart:'Nou diagnòstic',
+    featuredLbl:n=>`Fase 1 · ${n} sessions`,
+    phaseLbl:n=>`Fase ${n}`,
+    volUnit:'talles',
+    volDescs:["Petit ajust de silueta","Millora clara i definida","Reducció visible, canvi de talla","Canvi important i significatiu"],
+    volSess:n=>`${n} sessions de criolipòlisi necessàries`,
+    motiv1:'Necessitat de millora',motiv2:'Importància personal',motiv3:'Urgència del canvi',
+    motiv1desc:'Quant necessites millorar aquesta zona?',
+    motiv2desc:'Quant t\'importa aconseguir aquest objectiu?',
+    motiv3desc:'Amb quina urgència vols veure els resultats?',
+    motivLow:'Poc',motivHigh:'Molt',
+    questions:[
+      {id:'name',type:'text',cat:'Benvinguda',q:'Com et dius?',ph:'Escriu el teu nom...'},
+      {id:'area',type:'single',cat:"Àrea d'interès",q:'Quina àrea et preocupa més?',opts:[
+        {val:'corporal',label:'El meu cos',sub:'Silueta, greix, cel·lulitis, flaccidesa...'},
+        {val:'facial',label:'El meu rostre',sub:'Arrugues, taques, fermesa, lluminositat...'}
+      ]},
+      {id:'corp_zone',type:'multi',cat:'Cos · Zona',q:'En quines zones tens més problemes?',
+        condition:a=>a.area==='corporal'||a.area==='ambos',
+        opts:[
+          {val:'abdomen',label:'Abdomen i cintura',sub:'Panxa, flancs, excés de volum'},
+          {val:'gluteos',label:'Glutis i malucs',sub:'Glutis caiguts, cartutxeres'},
+          {val:'piernas',label:'Cames i cuixes',sub:'Cel·lulitis, retenció, cama pesada'},
+          {val:'brazos',label:'Braços',sub:'Flaccidesa, falta de to'},
+          {val:'general',label:'Tot el cos',sub:'Flaccidesa general, falta de definició'}
+        ]},
+      {id:'corp_problem',type:'multi',cat:'Cos · Problema',q:"Quin d'aquests problemes t'identifica més?",
+        condition:a=>a.area==='corporal'||a.area==='ambos',
+        opts:[
+          {val:'grasa',label:'Greix localitzat resistent',sub:'No respon a dieta ni exercici'},
+          {val:'celulitis',label:'Cel·lulitis i pell de taronja',sub:'Textura irregular, pell rugosa'},
+          {val:'flacidez',label:'Flaccidesa i pell sobrant',sub:'Pell descaiguda, falta de to'},
+          {val:'retencion',label:'Retenció de líquids',sub:'Cames pesades, inflor'},
+          {val:'tonificar',label:'Vull tonificar i definir',sub:'Múscul, fermesa, forma'}
+        ]},
+      {id:'vol_objetivo',type:'slider_vol',cat:'Objectiu · Volum',q:'Quantes talles vols perdre?',
+        condition:a=>(a.area==='corporal'||a.area==='ambos')&&(a.corp_problem||[]).includes('grasa')},
+      {id:'motivacion',type:'slider_motiv',cat:'La teva motivació',q:'Valora com et sents amb aquest objectiu'},
+      {id:'face_problem',type:'multi',cat:'Rostre · Problema',q:"Quin d'aquests problemes facials t'identifica més?",
+        condition:a=>a.area==='facial'||a.area==='ambos',
+        opts:[
+          {val:'arrugas',label:"Arrugues i línies d'expressió",sub:'Potes de gall, front, comissures'},
+          {val:'flacidez_facial',label:"Flaccidesa i òval caigut",sub:'Pell descaiguda, falta de fermesa'},
+          {val:'manchas',label:'Taques visibles',sub:'Sol, hormonals, envelliment'},
+          {val:'luminosidad',label:'Pell apagada, sense lluminositat',sub:'Vull un efecte glow'},
+          {val:'evento',label:'Preparació per a un esdeveniment',sub:'Casament, celebració, ocasió especial'}
+        ]},
+      {id:'age',type:'single',cat:'Sobre tu',q:"En quina franja d'edat estàs?",opts:[
+        {val:'joven',label:'18 - 35 anys'},
+        {val:'media',label:'36 - 50 anys'},
+        {val:'madura',label:'51 - 65 anys'},
+        {val:'senior',label:'Més de 65 anys'}
+      ]}
+    ]
+  }
+};
+
+let lang='es',answers={vol_objetivo:1,motiv_necesidad:3,motiv_importancia:3,motiv_urgencia:3},step=0,aq=[],chatMsgs=[];
+
+function getCrioSessions(v){
+  const map={1:6,2:8,3:10,4:12};
+  return map[Math.min(v,4)]||6;
+}
+
+function getCrioPrice(n,l){
+  if(n<=6) return {pack:l==='es'?'Pack 2 sesiones (campaña): 118 €':'Pack 2 sessions (campanya): 118 €',detail:l==='es'?'+ Pack 4+1 de regalo: 236 €':'+ Pack 4+1 de regal: 236 €'};
+  if(n<=8) return {pack:l==='es'?'Pack 4+1 de regalo × 2: 472 €':'Pack 4+1 de regal × 2: 472 €',detail:l==='es'?'56,80 €/sesión':'56,80 €/sessió'};
+  return {pack:l==='es'?'Pack intensivo 12 sesiones: 900 €':'Pack intensiu 12 sessions: 900 €',detail:l==='es'?'75 €/sesión':'75 €/sessió'};
+}
+
+function setLang(l,e){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById('lbl-sub').textContent=L[lang].sub;
+  answers={vol_objetivo:1,motiv_necesidad:3,motiv_importancia:3,motiv_urgencia:3};
+  step=0; chatMsgs=[];
+  document.getElementById('return-wrap').style.display='none';
+  document.getElementById('result-wrap').classList.remove('active');
+  document.getElementById('result-wrap').style.display='none';
+  document.getElementById('steps-wrap').style.display='block';
+  render();
+}
+
+function getAQ(){return L[lang].questions.filter(q=>!q.condition||q.condition(answers));}
+
+function buildSteps(){
+  aq=getAQ();
+  const c=document.getElementById('steps-wrap');c.innerHTML='';
+  aq.forEach((q,i)=>{
+    const d=document.createElement('div');
+    d.className='pstep'+(i===step?' active':'');
+    d.innerHTML=buildHTML(q,i);c.appendChild(d);
+  });
+}
+
+function buildHTML(q,i){
+  const t=L[lang];let h='';
+  if(q.type==='text'){
+    h=`<input class="pinput" type="text" placeholder="${q.ph}" value="${answers[q.id]||''}" oninput="answers['${q.id}']=this.value;upNav()"/>`;
+  } else if(q.type==='slider_vol'){
+    const v=answers.vol_objetivo||1;
+    const descs=t.volDescs;
+    h=`<div style="margin-top:1.5rem">
+      <div class="vol-labels"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+      <input type="range" class="vol-slider" min="1" max="4" step="1" value="${v}" oninput="updVol(this.value)"/>
+      <div class="vol-display">
+        <div class="vol-num" id="vnum">${v}</div>
+        <div class="vol-unit">${t.volUnit}</div>
+        <div class="vol-desc" id="vdesc">${descs[v-1]}</div>
+        <div class="vol-sessions" id="vsess">${t.volSess(getCrioSessions(v))}</div>
+      </div>
+    </div>`;
+  } else if(q.type==='slider_motiv'){
+    const t2=L[lang];
+    const motivKeys=[
+      {k:'necesidad', num:1},
+      {k:'importancia', num:2},
+      {k:'urgencia', num:3}
+    ];
+    h='<div class="slider-group">';
+    motivKeys.forEach(function(mk){
+      var k=mk.k, num=mk.num;
+      var label=t2['motiv'+num]||'';
+      var desc=t2['motiv'+num+'desc']||'';
+      var val=answers['motiv_'+k]||3;
+      h+='<div class="slider-item">';
+      h+='<div class="slider-label">'+label+'</div>';
+      h+='<div class="slider-desc">'+desc+'</div>';
+      h+='<div class="slider-row">';
+      h+='<span style="font-size:12px;color:#6b6b6b">'+t2.motivLow+'</span>';
+      h+='<input type="range" class="sl" min="1" max="5" step="1" value="'+val+'" oninput="answers[\'motiv_'+k+'\']=parseInt(this.value);document.getElementById(\'mv_'+k+'\').textContent=this.value"/>';
+      h+='<span class="sl-val" id="mv_'+k+'">'+val+'</span>';
+      h+='<span style="font-size:12px;color:#6b6b6b">'+t2.motivHigh+'</span>';
+      h+='</div>';
+      h+='<div class="sl-labels"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  } else {
+    const isM=q.type==='multi',sel=answers[q.id]||(isM?[]:null);
+    h='<div class="popts">';
+    (q.opts||[]).forEach(o=>{
+      const s=isM?sel.includes(o.val):sel===o.val;
+      h+=`<div class="popt${s?' selected':''}" onclick="selOpt('${q.id}','${o.val}',${isM})">
+        <div class="poc"><div class="pod"></div></div>
+        <div><div class="potxt">${o.label}</div>${o.sub?`<div class="posub">${o.sub}</div>`:''}</div>
+      </div>`;
+    });
+    h+='</div>';
+    if(isM)h+=`<div class="pmhint">${t.multiHint}</div>`;
+  }
+  const total=aq.length,isLast=i===total-1;
+  return `<div class="pqcat">${q.cat}</div>
+    <div class="pq">${q.q}</div>${h}
+    <div class="pnav">
+      <button class="pbtn" onclick="goBack()" ${i===0?'style="visibility:hidden"':''}>${t.prev}</button>
+      <span class="psc">${t.stepOf(i+1,total)}</span>
+      <button class="pbtn pbtn-p" id="bn${i}" onclick="${isLast?'showReturn()':'goNext()'}" ${!canGo(q)?'disabled':''}>${isLast?t.finish:t.next}</button>
+    </div>`;
+}
+
+function updVol(v){
+  answers.vol_objetivo=parseInt(v);
+  const t=L[lang];
+  const vn=document.getElementById('vnum');if(vn)vn.textContent=v;
+  const vd=document.getElementById('vdesc');if(vd)vd.textContent=t.volDescs[v-1];
+  const vs=document.getElementById('vsess');if(vs)vs.textContent=t.volSess(getCrioSessions(parseInt(v)));
+}
+
+function canGo(q){
+  if(q.type==='slider_vol'||q.type==='slider_motiv')return true;
+  if(q.type==='text')return(answers[q.id]||'').trim().length>0;
+  if(q.type==='multi')return(answers[q.id]||[]).length>0;
+  return answers[q.id]!=null;
+}
+function upNav(){const q=aq[step];const b=document.getElementById('bn'+step);if(b)b.disabled=!canGo(q);}
+function selOpt(id,val,isM){
+  if(isM){if(!answers[id])answers[id]=[];const x=answers[id].indexOf(val);if(x>=0)answers[id].splice(x,1);else answers[id].push(val);}
+  else answers[id]=val;
+  buildSteps();showStep(step);updProg();
+}
+function goNext(){aq=getAQ();if(step<aq.length-1){step++;buildSteps();showStep(step);updProg();}}
+function goBack(){if(step>0){step--;buildSteps();showStep(step);updProg();}}
+function showStep(i){document.querySelectorAll('.pstep').forEach((s,idx)=>s.classList.toggle('active',idx===i));}
+function updProg(){const total=aq.length;document.getElementById('prog').style.width=(total>1?(step/(total-1))*100:100)+'%';}
+
+function showReturn(){
+  const t=L[lang];
+  document.getElementById('steps-wrap').style.display='none';
+  const rw=document.getElementById('return-wrap');
+  rw.style.display='block';
+  rw.innerHTML=`<div class="return-screen">
+    <div class="return-icon" style="font-size:56px;color:#6b6b6b;margin-bottom:1rem">&#10003;</div>
+    <div class="return-title">${t.returnTitle}</div>
+    <div class="return-sub">${t.returnSub}</div>
+    <div class="pin-section">
+      <div class="pin-label">${t.pinHint}</div>
+      <div class="pin-input">
+        <input class="pin-digit" type="password" maxlength="4" id="pin-field" oninput="checkPin(this.value)" placeholder="••••"/>
+      </div>
+      <div class="pin-err" id="pin-err"></div>
+    </div>
+  </div>`;
+}
+
+function checkPin(v){
+  if(v.length===4){
+    if(v===PIN){showResult();}
+    else{
+      document.getElementById('pin-err').textContent=L[lang].pinErr;
+      document.getElementById('pin-field').value='';
+    }
+  }
+}
+
+function sci(key){return `<div class="rsci"><div class="rsci-lbl">${L[lang].sciLbl}</div>${SCIENCE[key][lang]}</div>`;}
+
+function showResult(){
+  const t=L[lang];
+  document.getElementById('return-wrap').style.display='none';
+  const rw=document.getElementById('result-wrap');
+  rw.style.display='block';rw.classList.add('active');
+
+  const name=(answers.name||'').trim()||'Cliente';
+  const probs=answers.corp_problem||[];
+  const zones=answers.corp_zone||[];
+  const fp=answers.face_problem||[];
+  const hasCorp=answers.area==='corporal'||answers.area==='ambos';
+  const hasFace=answers.area==='facial'||answers.area==='ambos';
+  const hasGrasa=probs.includes('grasa');
+  const cavOk=zones.includes('piernas')||zones.includes('brazos');
+  const vol=answers.vol_objetivo||1;
+  const nCrio=getCrioSessions(vol);
+  const crioP=getCrioPrice(nCrio,lang);
+  const mn=answers.motiv_necesidad||3,mi=answers.motiv_importancia||3,mu=answers.motiv_urgencia||3;
+
+  const motivHTML=`<div class="motivation-box">
+    ${[{k:'necesidad',v:mn,l:t.motiv1},{k:'importancia',v:mi,l:t.motiv2},{k:'urgencia',v:mu,l:t.motiv3}].map(m=>`
+      <div style="margin-bottom:0.75rem">
+        <div class="motivation-row"><span class="motivation-label">${m.l}</span><span class="motivation-val">${m.v}/5</span></div>
+        <div class="motivation-bar"><div class="motivation-fill" style="width:${m.v*20}%"></div></div>
+      </div>`).join('')}
+  </div>`;
+
+  let packsHTML='',phaseNum=0;
+
+  if(hasCorp&&hasGrasa){
+    phaseNum++;
+    packsHTML+=`<div class="rcard featured">
+      <div class="rbadge">${t.featuredLbl(nCrio)}</div>
+      <div class="rname">${lang==='es'?'Criolipólisis CRIOX Avanxel':'Criolipòlisi CRIOX Avanxel'}</div>
+      <div class="rinc">
+        ${lang==='es'?`Objetivo: perder ${vol} talla${vol>1?'s':''} · ${nCrio} sesiones`:`Objectiu: perdre ${vol} talla${vol>1?'s':''} · ${nCrio} sessions`}
+        <br><div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
+          ${[6,8,10,12].map(n=>`<span class="${n===nCrio?'pill hl':'pill'}">${n} ${lang==='es'?'ses.':'sess.'}</span>`).join('')}
+        </div>
+        ${cavOk?`<br>${lang==='es'?'+ Cavitación en piernas/brazos':'+ Cavitació a cames/braços'}`:''}
+      </div>
+      ${sci('criox')}
+      <div class="rprice">${crioP.pack}</div>
+      <div class="rpricesub">${crioP.detail}</div>
+    </div>`;
+  }
+
+  if(hasCorp&&(probs.includes('celulitis')||probs.includes('retencion')||hasGrasa)){
+    phaseNum++;
+    packsHTML+=`<div class="rcard">
+      <div class="rbadge">${t.phaseLbl(phaseNum)}</div>
+      <div class="rname">${lang==='es'?'Pack Alisado Anticelulítico':'Pack Allisat Anticel·lulític'}</div>
+      <div class="rinc">${lang==='es'?'Endomodelaje + Presoterapia + RollAction + Lipoled + Maderoterapia + Vacum':'Endomodelatge + Pressoteràpia + RollAction + Lipoled + Teràpia de fusta + Vacum'}</div>
+      ${sci('endo')}
+      <div class="rprice">${lang==='es'?'Desde 300 €':'Des de 300 €'}</div>
+      <div class="rpricesub">${lang==='es'?'5 sesiones · 60 €/ses. · o 10 ses.: 500 €':'5 sessions · 60 €/sess. · o 10 sess.: 500 €'}</div>
+    </div>`;
+  }
+
+  if(hasCorp&&(probs.includes('flacidez')||probs.includes('tonificar')||hasGrasa)){
+    phaseNum++;
+    packsHTML+=`<div class="rcard">
+      <div class="rbadge">${t.phaseLbl(phaseNum)}</div>
+      <div class="rname">${lang==='es'?'Pack Tonificación · EMS + Radiofrecuencia Corporal':'Pack Tonificació · EMS + Radiofreqüència Corporal'}</div>
+      <div class="rinc">${lang==='es'?'EMS Body Sculpt (36.000 contracciones/sesión) + Radiofrecuencia corporal para reafirmar tras la pérdida de volumen':'EMS Body Sculpt (36.000 contraccions/sessió) + Radiofreqüència corporal per reafirmar'}</div>
+      ${sci('ems')}
+      <div class="rprice">${lang==='es'?'Desde 150 €':'Des de 150 €'}</div>
+      <div class="rpricesub">${lang==='es'?'Pack 5 ses. EMS + Radiofrecuencia desde 200 €':'Pack 5 sess. EMS + Radiofreqüència des de 200 €'}</div>
+    </div>`;
+  }
+
+  if(hasFace){
+    if(fp.includes('arrugas')||fp.includes('flacidez_facial')){
+      packsHTML+=`<div class="rcard">
+        <div class="rbadge">${lang==='es'?'Facial':'Facial'}</div>
+        <div class="rname">${lang==='es'?'Radiofrecuencia Facial · Termoabsorción':'Radiofreqüència Facial · Termoabsorció'}</div>
+        <div class="rinc">${lang==='es'?'Reafirma el óvalo · Suaviza arrugas · Efecto tensor inmediato · 3+1 de regalo':'Reafirma l\'òval · Suavitza arrugues · Efecte tensor immediat · 3+1 de regal'}</div>
+        ${sci('rffac')}<div class="rprice">80 €</div>
+        <div class="rpricesub">${lang==='es'?'por sesión · 3+1 de regalo':'per sessió · 3+1 de regal'}</div>
+      </div>`;
+    }
+    if(fp.includes('manchas')){
+      packsHTML+=`<div class="rcard">
+        <div class="rbadge">Facial</div>
+        <div class="rname">Plasma Pen</div>
+        <div class="rinc">${lang==='es'?'Eliminación precisa de manchas y lesiones pigmentadas':'Eliminació precisa de taques i lesions pigmentades'}</div>
+        ${sci('plasma')}<div class="rprice">${lang==='es'?'Precio según zona':'Preu segons zona'}</div>
+      </div>`;
+    }
+    if(fp.includes('luminosidad')||fp.includes('evento')){
+      packsHTML+=`<div class="rcard">
+        <div class="rbadge">Facial</div>
+        <div class="rname">${lang==='es'?'Vitaminas + Lipoled':'Vitamines + Lipoled'}</div>
+        <div class="rinc">${lang==='es'?'Luminosidad inmediata · Efecto glow · 3+1 de regalo':'Lluminositat immediata · Efecte glow · 3+1 de regal'}</div>
+        ${sci('lipoled')}<div class="rprice">${lang==='es'?'Desde 65 €':'Des de 65 €'}</div>
+        <div class="rpricesub">${lang==='es'?'por sesión · 3+1 de regalo':'per sessió · 3+1 de regal'}</div>
+      </div>`;
+    }
+  }
+
+  chatMsgs=[{role:'bot',text:t.chatWelcome(name)}];
+
+  rw.innerHTML=`
+    <div class="rh">
+      <div class="rh-title">${t.resultTitle(name)}</div>
+      <div class="rh-sub">${t.resultSub}</div>
+    </div>
+    <div class="rsect">${t.yourData}</div>
+    <div class="rcard" style="margin-bottom:1.5rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+        <div><span style="color:#6b6b6b">${lang==='es'?'Nombre':'Nom'}: </span><span style="font-weight:500">${name}</span></div>
+        <div><span style="color:#6b6b6b">${lang==='es'?'Edad':'Edat'}: </span><span style="font-weight:500">${{joven:lang==='es'?'18-35':'18-35',media:lang==='es'?'36-50':'36-50',madura:lang==='es'?'51-65':'51-65',senior:lang==='es'?'+65':'+65'}[answers.age]||'-'}</span></div>
+        <div><span style="color:#6b6b6b">${lang==='es'?'Zona':'Zona'}: </span><span style="font-weight:500">${(zones.join(', '))||'-'}</span></div>
+        ${hasGrasa?`<div><span style="color:#6b6b6b">${lang==='es'?'Objetivo':'Objectiu'}: </span><span style="font-weight:500">${vol} ${t.volUnit} · ${nCrio} ${lang==='es'?'ses.':'sess.'} crio</span></div>`:''}
+      </div>
+    </div>
+    <div class="rsect">${t.motivTitle}</div>
+    ${motivHTML}
+    <div class="rdiv"></div>
+    <div class="rsect">${lang==='es'?'Protocolo recomendado':'Protocol recomanat'}</div>
+    ${packsHTML}
+    <p class="rnote">${t.noteLabel}</p>
+    <button class="pbtn" style="margin-top:1.5rem;display:block;width:100%" onclick="restartTest()">${t.restart}</button>`;
+}
+
+function renderMsgs(){
+  return chatMsgs.map(m=>`<div class="chat-msg ${m.role}">${m.text}</div>`).join('');
+}
+
+function addMsg(role,text){
+  chatMsgs.push({role,text});
+  const c=document.getElementById('chat-msgs');
+  if(c){c.innerHTML=renderMsgs();c.scrollTop=c.scrollHeight;}
+}
+
+async function sendChat(){
+  const inp=document.getElementById('chat-inp');
+  if(!inp||!inp.value.trim())return;
+  const userMsg=inp.value.trim();
+  inp.value='';
+  addMsg('user',userMsg);
+
+  const c=document.getElementById('chat-msgs');
+  const typing=document.createElement('div');
+  typing.className='typing';typing.id='typing-ind';
+  typing.innerHTML='<span></span><span></span><span></span>';
+  if(c){c.appendChild(typing);c.scrollTop=c.scrollHeight;}
+
+  const name=(answers.name||'').trim();
+  const probs=(answers.corp_problem||[]).join(', ');
+  const zones=(answers.corp_zone||[]).join(', ');
+  const vol=answers.vol_objetivo||1;
+
+  const systemPrompt=lang==='es'
+    ?`Eres un asesor nutricional especializado del centro de estética Pellbella. Tu rol es dar consejos de alimentación que complementen los tratamientos estéticos del centro. El cliente se llama ${name}. Sus problemas son: ${probs}. Zonas a tratar: ${zones}. Objetivo: perder ${vol} tallas. Da consejos breves, prácticos y motivadores. Máximo 3-4 frases. En español.`
+    :`Ets un assessor nutricional especialitzat del centre d'estètica Pellbella. El teu rol és donar consells d'alimentació que complementin els tractaments estètics. El client es diu ${name}. Els seus problemes són: ${probs}. Zones a tractar: ${zones}. Objectiu: perdre ${vol} talles. Dona consells breus, pràctics i motivadors. Màxim 3-4 frases. En català.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:systemPrompt,
+        messages:[
+          ...chatMsgs.filter(m=>m.role!=='bot'||chatMsgs.indexOf(m)>0).map(m=>({role:m.role==='bot'?'assistant':'user',content:m.text})),
+          {role:'user',content:userMsg}
+        ]
+      })
+    });
+    const data=await res.json();
+    const typingEl=document.getElementById('typing-ind');if(typingEl)typingEl.remove();
+    const reply=data.content&&data.content[0]?data.content[0].text:'...';
+    addMsg('bot',reply);
+  }catch(e){
+    const typingEl=document.getElementById('typing-ind');if(typingEl)typingEl.remove();
+    addMsg('bot',lang==='es'?'Lo siento, no puedo responder ahora. Consulta con el equipo de Pellbella.':'Ho sento, no puc respondre ara. Consulta amb l\'equip de Pellbella.');
+  }
+}
+
+function restartTest(){
+  answers={vol_objetivo:1,motiv_necesidad:3,motiv_importancia:3,motiv_urgencia:3};
+  step=0;chatMsgs=[];
+  document.getElementById('return-wrap').style.display='none';
+  document.getElementById('result-wrap').classList.remove('active');
+  document.getElementById('result-wrap').style.display='none';
+  document.getElementById('steps-wrap').style.display='block';
+  render();
+}
+
+function render(){aq=getAQ();buildSteps();showStep(step);updProg();}
+try{render();}catch(err){
+  document.getElementById('steps-wrap').innerHTML='<div style="padding:2rem;text-align:center;font-size:14px;color:#6b6b6b">Error al cargar. Recarga la página.</div>';
+  console.error('Pellbella render error:',err);
+}
+</script>
+
+</body>
+</html>
