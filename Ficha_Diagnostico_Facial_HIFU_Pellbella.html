@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Pellbella · Ficha de Diagnóstico Facial HIFU</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+
+:root{
+  --negro:#0A0A0A;
+  --oro:#D9A94E;
+  --oro-suave:#E9CE93;
+  --crema:#FAF9F6;
+  --gris:#6b6b66;
+  --linea:#DAD6CC;
+  --banda:#F3F1EB;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:#E7E4DC;}
+body{
+  font-family:'DM Sans',-apple-system,sans-serif;
+  color:var(--negro);
+  font-size:15px;
+  line-height:1.4;
+  -webkit-text-size-adjust:100%;
+}
+.sheet{
+  max-width:900px;
+  margin:0 auto;
+  background:var(--crema);
+  min-height:100vh;
+}
+
+/* ---------- HEADER ---------- */
+.brand-header{
+  background:var(--negro);
+  color:var(--crema);
+  padding:22px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.brand{display:flex;align-items:center;gap:10px;}
+.mark{width:16px;height:22px;flex:none;}
+.wordmark{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--oro);}
+.header-right{text-align:right;}
+.eyebrow{font-size:11px;letter-spacing:1.5px;color:var(--oro-suave);text-transform:uppercase;font-weight:500;}
+.doc-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--crema);margin-top:2px;}
+
+/* ---------- CONTENT ---------- */
+.content{padding:8px 28px 10px;}
+section{margin:26px 0 30px;}
+
+.section-title{
+  display:flex;align-items:baseline;gap:10px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:600;
+  margin-bottom:4px;
+}
+.section-title .num{color:var(--oro);font-size:17px;}
+.section-rule{border:none;border-top:1.5px solid var(--oro);margin:0 0 16px;}
+
+/* ---------- FIELDS ---------- */
+.field-row{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:14px;}
+.field{flex:1 1 200px;min-width:140px;}
+.field.small{flex:0 1 110px;}
+.field-label{font-size:11px;letter-spacing:0.8px;text-transform:uppercase;color:var(--gris);margin-bottom:5px;}
+input[type=text],input[type=date],input[type=tel],textarea{
+  width:100%;
+  border:none;
+  border-bottom:1.5px solid var(--negro);
+  background:transparent;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  color:var(--negro);
+  padding:6px 2px;
+  outline:none;
+}
+input[type=text]:focus,input[type=date]:focus,input[type=tel]:focus,textarea:focus{
+  border-bottom-color:var(--oro);
+  background:#fffdf8;
+}
+textarea{border:1.5px solid var(--linea);border-radius:2px;resize:vertical;font-size:14.5px;}
+textarea:focus{border-color:var(--oro);}
+
+/* ---------- CONTRAINDICACIONES ---------- */
+.check-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:640px){.check-grid{grid-template-columns:1fr 1fr;column-gap:36px;}}
+.check-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:9px;border-bottom:1px dotted var(--linea);
+  gap:10px;
+}
+.check-item .txt{font-size:14.5px;}
+.yn{display:flex;gap:14px;flex:none;}
+.yn label{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--gris);cursor:pointer;}
+input[type=radio]{
+  appearance:none;-webkit-appearance:none;
+  width:16px;height:16px;border:1.5px solid var(--negro);border-radius:50%;
+  display:inline-block;position:relative;cursor:pointer;flex:none;margin:0;
+}
+input[type=radio]:checked{border-color:var(--oro);}
+input[type=radio]:checked::after{
+  content:'';position:absolute;inset:3px;border-radius:50%;background:var(--oro);
+}
+
+/* ---------- DIAGRAM ---------- */
+.diagram-wrap{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin:6px 0 18px;}
+.diagram-cap{text-align:center;font-size:12px;color:var(--gris);font-style:italic;margin-top:4px;}
+
+/* ---------- ZONE TABLE ---------- */
+.zone-row{
+  display:grid;grid-template-columns: 1fr;gap:8px;
+  padding:12px 0;border-bottom:1px dotted var(--linea);
+}
+@media(min-width:640px){
+  .zone-row{grid-template-columns: 150px 1fr;align-items:center;}
+}
+.zone-name{font-weight:700;font-size:14.5px;}
+.severity-options{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:8px;}
+.severity-options label{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--gris);cursor:pointer;}
+.zone-notes{width:100%;}
+
+/* ---------- PLAN GRID ---------- */
+.plan-grid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:640px){.plan-grid{grid-template-columns:1fr 1fr 1fr;}}
+
+/* ---------- SESSIONS TABLE ---------- */
+.sessions-table{width:100%;border-collapse:collapse;margin-top:4px;}
+.sessions-table thead th{
+  background:var(--negro);color:var(--oro-suave);
+  font-size:10.5px;letter-spacing:0.5px;text-transform:uppercase;font-weight:500;
+  text-align:left;padding:8px 6px;
+}
+.sessions-table td{border-bottom:1px solid var(--linea);padding:8px 6px;vertical-align:top;}
+.sessions-table tbody tr:nth-child(even) td{background:var(--banda);}
+.sessions-table input[type=text]{border-bottom:1px solid var(--negro);font-size:13px;padding:4px 2px;}
+.sessions-table td.actions-cell{text-align:center;width:34px;}
+.row-del{
+  border:none;background:none;color:var(--gris);cursor:pointer;font-size:16px;line-height:1;padding:4px;
+}
+.row-del:hover{color:#B23B3B;}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.sessions-table{min-width:680px;}
+.add-row-btn{
+  margin-top:12px;background:none;border:1.5px solid var(--oro);color:#8a6a1f;
+  font-family:'DM Sans',sans-serif;font-size:12.5px;letter-spacing:0.5px;
+  padding:8px 16px;border-radius:2px;cursor:pointer;text-transform:uppercase;
+}
+.add-row-btn:hover{background:var(--oro);color:var(--negro);}
+
+/* ---------- CONSENT / SIGNATURE ---------- */
+.legal-note{font-size:13px;color:var(--gris);font-style:italic;line-height:1.6;margin-bottom:20px;}
+.signature-row{display:flex;gap:24px;flex-wrap:wrap;}
+.signature-box{flex:1 1 260px;text-align:center;}
+.sig-hint{font-size:11px;color:var(--gris);font-style:italic;margin-bottom:6px;}
+canvas.sigpad{
+  width:100%;height:140px;border:1.5px solid var(--negro);border-radius:2px;
+  touch-action:none;background:#fff;display:block;
+}
+.sig-actions{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.signature-label{font-size:11px;letter-spacing:0.8px;text-transform:uppercase;color:var(--gris);}
+.clear-sig{border:none;background:none;color:var(--gris);font-size:11px;text-decoration:underline;cursor:pointer;padding:0;}
+
+/* ---------- ACTIONS / FOOTER ---------- */
+.actions{
+  display:flex;gap:12px;flex-wrap:wrap;padding:6px 28px 26px;
+}
+.actions button{
+  font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.4px;
+  padding:12px 22px;border-radius:2px;cursor:pointer;text-transform:uppercase;
+}
+#btnPrint{background:var(--negro);color:var(--oro-suave);border:1.5px solid var(--negro);}
+#btnPrint:hover{background:#1c1c1c;}
+#btnReset{background:none;color:var(--gris);border:1.5px solid var(--linea);}
+#btnReset:hover{border-color:#B23B3B;color:#B23B3B;}
+.save-note{font-size:11.5px;color:var(--gris);padding:0 28px 22px;font-style:italic;}
+footer{border-top:1px solid var(--linea);padding:14px 28px;font-size:11px;color:var(--gris);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+/* ---------- PRINT ---------- */
+@media print{
+  body{background:#fff;}
+  .sheet{max-width:100%;}
+  .no-print{display:none !important;}
+  section{page-break-inside:avoid;}
+  input,textarea{border-color:#000 !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <div class="brand-header">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 0 C10 0 20 12 20 19 C20 24 15.5 28 10 28 C4.5 28 0 24 0 19 C0 12 10 0 10 0 Z" fill="#D9A94E"/>
+      </svg>
+      <div class="wordmark">Pellbella</div>
+    </div>
+    <div class="header-right">
+      <div class="eyebrow">Ficha clínica digital</div>
+      <div class="doc-title">Diagnóstico Facial · HIFU</div>
+    </div>
+  </div>
+
+  <form class="content" id="fichaForm" autocomplete="off">
+
+    <section>
+      <div class="section-title"><span class="num">01</span>Datos de la clienta</div>
+      <hr class="section-rule">
+      <div class="field-row">
+        <div class="field" style="flex:2 1 260px;">
+          <div class="field-label">Nombre y apellidos</div>
+          <input type="text" id="nombre_clienta">
+        </div>
+        <div class="field small">
+          <div class="field-label">Nº de ficha</div>
+          <input type="text" id="num_ficha">
+        </div>
+        <div class="field small">
+          <div class="field-label">Fecha</div>
+          <input type="date" id="fecha_diag">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field small">
+          <div class="field-label">Edad</div>
+          <input type="text" id="edad" inputmode="numeric">
+        </div>
+        <div class="field">
+          <div class="field-label">Teléfono</div>
+          <input type="tel" id="telefono">
+        </div>
+        <div class="field" style="flex:1.4 1 200px;">
+          <div class="field-label">Esteticista</div>
+          <input type="text" id="esteticista_1">
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span class="num">02</span>Antecedentes y contraindicaciones</div>
+      <hr class="section-rule">
+      <div class="check-grid" id="contraGrid"></div>
+      <div class="field" style="margin-top:14px;">
+        <div class="field-label">Observaciones</div>
+        <input type="text" id="obs_contraindicaciones">
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span class="num">03</span>Diagnóstico de firmeza por zonas</div>
+      <hr class="section-rule">
+
+      <div class="diagram-wrap">
+        <div>
+          <svg width="150" height="190" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="80" cy="85" rx="52" ry="66" fill="none" stroke="#0A0A0A" stroke-width="1.4"/>
+            <path d="M42 145 C42 175 60 196 80 196 C100 196 118 175 118 145" fill="none" stroke="#0A0A0A" stroke-width="1.4"/>
+            <line x1="80" y1="18" x2="80" y2="150" stroke="#DAD6CC" stroke-width="0.8" stroke-dasharray="1.5 2"/>
+            <circle cx="80" cy="34" r="2.6" fill="#D9A94E"/>
+            <circle cx="52" cy="55" r="2.6" fill="#D9A94E"/>
+            <circle cx="45" cy="95" r="2.6" fill="#D9A94E"/>
+            <circle cx="60" cy="118" r="2.6" fill="#D9A94E"/>
+            <circle cx="40" cy="140" r="2.6" fill="#D9A94E"/>
+            <circle cx="80" cy="180" r="2.6" fill="#D9A94E"/>
+          </svg>
+          <div class="diagram-cap">Vista frontal</div>
+        </div>
+        <div>
+          <svg width="132" height="190" viewBox="0 0 140 200" xmlns="http://www.w3.org/2000/svg">
+            <path d="M55 18 C90 18 110 40 108 65 C120 68 128 78 126 90 C124 98 118 100 116 104
+                     C118 112 112 118 106 120 C108 130 100 138 92 140
+                     C96 155 86 172 68 182 C55 190 42 190 34 182
+                     C24 173 22 158 26 145 C18 140 14 130 16 120
+                     C10 112 10 100 16 90 C12 75 18 55 30 42 C38 28 44 20 55 18 Z"
+                  fill="none" stroke="#0A0A0A" stroke-width="1.4"/>
+            <circle cx="72" cy="30" r="2.6" fill="#D9A94E"/>
+            <circle cx="112" cy="88" r="2.6" fill="#D9A94E"/>
+            <circle cx="100" cy="122" r="2.6" fill="#D9A94E"/>
+            <circle cx="70" cy="178" r="2.6" fill="#D9A94E"/>
+          </svg>
+          <div class="diagram-cap">Vista de perfil</div>
+        </div>
+      </div>
+
+      <div id="zoneRows"></div>
+    </section>
+
+    <section>
+      <div class="section-title"><span class="num">04</span>Objetivo prioritario de la clienta</div>
+      <hr class="section-rule">
+      <textarea id="objetivo_clienta" rows="3" placeholder="Qué le preocupa, qué espera del tratamiento..."></textarea>
+    </section>
+
+    <section>
+      <div class="section-title"><span class="num">05</span>Plan de tratamiento recomendado</div>
+      <hr class="section-rule">
+      <div class="plan-grid" style="margin-bottom:16px;">
+        <div class="field"><div class="field-label">Zonas a tratar</div><input type="text" id="plan_zonas"></div>
+        <div class="field"><div class="field-label">Nº de sesiones</div><input type="text" id="plan_sesiones"></div>
+        <div class="field"><div class="field-label">Periodicidad</div><input type="text" id="plan_periodicidad"></div>
+      </div>
+      <div class="plan-grid">
+        <div class="field"><div class="field-label">Cartucho / profundidad</div><input type="text" id="plan_cartucho"></div>
+        <div class="field"><div class="field-label">Nº disparos previstos</div><input type="text" id="plan_disparos"></div>
+        <div class="field"><div class="field-label">Nivel de energía</div><input type="text" id="plan_energia"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span class="num">06</span>Registro de sesiones</div>
+      <hr class="section-rule">
+      <div class="table-scroll">
+        <table class="sessions-table">
+          <thead>
+            <tr>
+              <th style="width:110px;">Fecha</th>
+              <th>Zonas tratadas</th>
+              <th style="width:120px;">Cartucho / prof.</th>
+              <th style="width:90px;">Nº disparos</th>
+              <th>Observaciones y tolerancia</th>
+              <th style="width:110px;">Firma / iniciales</th>
+              <th class="no-print" style="width:34px;"></th>
+            </tr>
+          </thead>
+          <tbody id="sessionsBody"></tbody>
+        </table>
+      </div>
+      <button type="button" class="add-row-btn no-print" id="addRowBtn">+ Añadir sesión</button>
+    </section>
+
+    <section>
+      <div class="section-title"><span class="num">07</span>Consentimiento y firma</div>
+      <hr class="section-rule">
+      <p class="legal-note">
+        La clienta declara haber informado con veracidad de sus antecedentes médicos y haber sido informada del
+        procedimiento HIFU, sus efectos esperados, posibles molestias temporales y contraindicaciones, aceptando
+        someterse al tratamiento descrito en esta ficha.
+      </p>
+      <div class="signature-row">
+        <div class="signature-box">
+          <div class="sig-hint">Firma con el dedo o el lápiz de la tablet</div>
+          <canvas class="sigpad" id="sigCliente"></canvas>
+          <div class="sig-actions">
+            <span class="signature-label">Firma de la clienta</span>
+            <button type="button" class="clear-sig no-print" data-target="sigCliente">Borrar</button>
+          </div>
+        </div>
+        <div class="signature-box">
+          <div class="sig-hint">Firma con el dedo o el lápiz de la tablet</div>
+          <canvas class="sigpad" id="sigEsteticista"></canvas>
+          <div class="sig-actions">
+            <span class="signature-label">Firma de la esteticista</span>
+            <button type="button" class="clear-sig no-print" data-target="sigEsteticista">Borrar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </form>
+
+  <div class="actions no-print">
+    <button type="button" id="btnPrint">Imprimir / Guardar como PDF</button>
+    <button type="button" id="btnReset">Vaciar ficha</button>
+  </div>
+  <div class="save-note no-print">Los datos se guardan automáticamente en esta tablet mientras rellenas la ficha.</div>
+
+  <footer>
+    <span>Pellbella · Les Franqueses del Vallès</span>
+    <span>Ficha de diagnóstico facial — HIFU</span>
+  </footer>
+
+</div>
+
+<script>
+const CONTRA_ITEMS = [
+  ["contra_1","Embarazo o lactancia"],
+  ["contra_2","Marcapasos / implantes metálicos"],
+  ["contra_3","Patología cutánea activa en la zona"],
+  ["contra_4","Tratamiento estético reciente (<15 días)"],
+  ["contra_5","Hipersensibilidad al calor / dolor"],
+  ["contra_6","Alergias conocidas"],
+];
+const ZONES = [
+  ["zona_1","Frente / entrecejo"],
+  ["zona_2","Pómulos / mejillas"],
+  ["zona_3","Surco nasogeniano"],
+  ["zona_4","Óvalo facial / mandíbula"],
+  ["zona_5","Papada / cuello"],
+];
+const SESSION_COLS = ["fecha","zonas","cartucho","disparos","obs","firma"];
+
+const contraGrid = document.getElementById('contraGrid');
+CONTRA_ITEMS.forEach(([id,label])=>{
+  const div = document.createElement('div');
+  div.className = 'check-item';
+  div.innerHTML = `<span class="txt">${label}</span>
+    <span class="yn">
+      <label><input type="radio" name="${id}" value="Si"> Sí</label>
+      <label><input type="radio" name="${id}" value="No"> No</label>
+    </span>`;
+  contraGrid.appendChild(div);
+});
+
+const zoneRows = document.getElementById('zoneRows');
+ZONES.forEach(([id,label])=>{
+  const div = document.createElement('div');
+  div.className = 'zone-row';
+  div.innerHTML = `
+    <div class="zone-name">${label}</div>
+    <div>
+      <div class="severity-options">
+        <label><input type="radio" name="${id}" value="Leve"> Leve</label>
+        <label><input type="radio" name="${id}" value="Moderada"> Moderada</label>
+        <label><input type="radio" name="${id}" value="Marcada"> Marcada</label>
+      </div>
+      <input type="text" class="zone-notes" id="obs_${id}" placeholder="Observaciones">
+    </div>`;
+  zoneRows.appendChild(div);
+});
+
+const sessionsBody = document.getElementById('sessionsBody');
+function addSessionRow(prefill){
+  const tr = document.createElement('tr');
+  const rowId = 'r' + Date.now() + Math.floor(Math.random()*1000);
+  tr.dataset.rowId = rowId;
+  tr.innerHTML = SESSION_COLS.map(col=>`<td><input type="text" data-col="${col}"></td>`).join('')
+    + `<td class="actions-cell no-print"><button type="button" class="row-del" title="Eliminar fila">×</button></td>`;
+  sessionsBody.appendChild(tr);
+  tr.querySelector('.row-del').addEventListener('click', ()=>{ tr.remove(); saveState(); });
+  if(prefill){
+    SESSION_COLS.forEach(col=>{
+      const inp = tr.querySelector(`[data-col="${col}"]`);
+      if(inp && prefill[col]) inp.value = prefill[col];
+    });
+  }
+}
+document.getElementById('addRowBtn').addEventListener('click', ()=>{ addSessionRow(); saveState(); });
+
+/* ---------- SIGNATURE PADS ---------- */
+function setupSigPad(canvas){
+  const ctx = canvas.getContext('2d');
+  let drawing = false, last = null;
+  function resize(){
+    const ratio = window.devicePixelRatio || 1;
+    const data = canvas.toDataURL();
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width = w * ratio; canvas.height = h * ratio;
+    ctx.scale(ratio, ratio);
+    ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#0A0A0A';
+    const img = new Image();
+    img.onload = ()=> ctx.drawImage(img,0,0,w,h);
+    img.src = data;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  function pos(e){
+    const r = canvas.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return {x: p.clientX - r.left, y: p.clientY - r.top};
+  }
+  function start(e){ drawing = true; last = pos(e); e.preventDefault(); }
+  function move(e){
+    if(!drawing) return;
+    const p = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+    last = p; e.preventDefault();
+  }
+  function end(){ if(drawing){ drawing=false; saveState(); } }
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', end);
+  return {
+    clear: ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); saveState(); },
+    dataURL: ()=> canvas.toDataURL('image/png'),
+    load: (durl)=>{
+      if(!durl) return;
+      const img = new Image();
+      img.onload = ()=> ctx.drawImage(img,0,0,canvas.clientWidth,canvas.clientHeight);
+      img.src = durl;
+    }
+  };
+}
+const sigCliente = setupSigPad(document.getElementById('sigCliente'));
+const sigEsteticista = setupSigPad(document.getElementById('sigEsteticista'));
+document.querySelectorAll('.clear-sig').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    (btn.dataset.target === 'sigCliente' ? sigCliente : sigEsteticista).clear();
+  });
+});
+
+/* ---------- AUTOSAVE (this device only) ---------- */
+const STORAGE_KEY = 'pellbella_ficha_hifu_v1';
+
+function collectState(){
+  const state = {text:{}, radio:{}, sessions:[]};
+  document.querySelectorAll('#fichaForm input[type=text], #fichaForm input[type=date], #fichaForm input[type=tel], #fichaForm textarea').forEach(el=>{
+    if(el.id) state.text[el.id] = el.value;
+  });
+  document.querySelectorAll('#fichaForm input[type=radio]:checked').forEach(el=>{
+    state.radio[el.name] = el.value;
+  });
+  sessionsBody.querySelectorAll('tr').forEach(tr=>{
+    const row = {};
+    tr.querySelectorAll('input[data-col]').forEach(inp=> row[inp.dataset.col] = inp.value );
+    state.sessions.push(row);
+  });
+  state.sigCliente = sigCliente.dataURL();
+  state.sigEsteticista = sigEsteticista.dataURL();
+  return state;
+}
+
+let saveTimer = null;
+function saveState(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState())); }catch(e){}
+  }, 250);
+}
+
+function loadState(){
+  let raw;
+  try{ raw = localStorage.getItem(STORAGE_KEY); }catch(e){ return; }
+  if(!raw) return;
+  let state;
+  try{ state = JSON.parse(raw); }catch(e){ return; }
+
+  Object.entries(state.text||{}).forEach(([id,val])=>{
+    const el = document.getElementById(id);
+    if(el) el.value = val;
+  });
+  Object.entries(state.radio||{}).forEach(([name,val])=>{
+    const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
+    if(el) el.checked = true;
+  });
+  sessionsBody.innerHTML = '';
+  if(state.sessions && state.sessions.length){
+    state.sessions.forEach(row=> addSessionRow(row));
+  } else {
+    for(let i=0;i<4;i++) addSessionRow();
+  }
+  setTimeout(()=>{
+    sigCliente.load(state.sigCliente);
+    sigEsteticista.load(state.sigEsteticista);
+  }, 60);
+}
+
+document.getElementById('fichaForm').addEventListener('input', saveState);
+document.getElementById('fichaForm').addEventListener('change', saveState);
+
+document.getElementById('btnPrint').addEventListener('click', ()=> window.print());
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  if(!confirm('¿Vaciar todos los datos de esta ficha? No se puede deshacer.')) return;
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  document.querySelectorAll('#fichaForm input[type=text], #fichaForm input[type=date], #fichaForm input[type=tel], #fichaForm textarea').forEach(el=> el.value = '');
+  document.querySelectorAll('#fichaForm input[type=radio]').forEach(el=> el.checked = false);
+  sessionsBody.innerHTML = '';
+  for(let i=0;i<4;i++) addSessionRow();
+  sigCliente.clear(); sigEsteticista.clear();
+});
+
+/* init */
+if(!localStorage.getItem(STORAGE_KEY)){
+  for(let i=0;i<4;i++) addSessionRow();
+} else {
+  loadState();
+}
+</script>
+</body>
+</html>
