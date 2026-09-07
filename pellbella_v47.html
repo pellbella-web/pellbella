@@ -477,8 +477,6 @@ async function seleccionarCarpeta(){
     rootDirHandle=h;
     localStorage.setItem('pb_folder_name',h.name);
     actualizarFolderBar();
-    await initDB();
-    showStatus2('folderInfo','✅ Carpeta seleccionada: '+h.name,false);
   }catch(e){
     if(e.name!=='AbortError')alert('Error al acceder a la carpeta: '+e.message);
   }
