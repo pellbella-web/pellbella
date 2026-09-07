@@ -578,7 +578,7 @@ async function listDir(dirHandle){
 // ═══════════════════════════════
 function initDB(){
   return new Promise((res,rej)=>{
-    const req=indexedDB.open('PellbellaV2',1);
+    const req=indexedDB.open('PellbellaApp1',1);
     req.onupgradeneeded=e=>{
       const d=e.target.result;
       if(!d.objectStoreNames.contains('clientas')){
@@ -1395,7 +1395,10 @@ function resetAll(){
 initDB().then(()=>{
   actualizarFolderBar();
   console.log('Pellbella App lista');
-}).catch(e=>console.error('DB:',e));
+}).catch(e=>{
+  console.error('DB:',e);
+  document.body.innerHTML='<div style="padding:30px;font-family:sans-serif;"><h2>Error al iniciar</h2><p>'+e.message+'</p></div>';
+});
 </script>
 </body>
 </html>
