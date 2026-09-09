@@ -65,43 +65,33 @@
   .barra{height:5px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; margin-bottom:8px;}
   .barra-fill{height:100%; border-radius:4px;}
   .metrica-nota{font-size:12.5px; color:var(--gris); line-height:1.5;}
+  .metrica-nota em{color:var(--oro-suave); font-style:normal;}
   .ajuste{display:flex; align-items:center; gap:8px; margin-top:8px;}
   .ajuste label{font-size:11px; color:var(--gris);}
   .ajuste input[type=range]{flex:1; accent-color:var(--oro);}
   .ajuste .valor{font-size:12px; color:var(--oro-suave); width:32px; text-align:right;}
 
-  .resumen-general{display:flex; gap:12px; margin-bottom:6px;}
-  .resumen-general .caja{flex:1; border:1px solid var(--linea); padding:16px 14px; text-align:center; border-radius:2px;}
-  .resumen-general .caja .num{font-family:'Cormorant Garamond',serif; font-size:34px; color:var(--oro-suave);}
-  .resumen-general .caja .etq{font-size:11px; color:var(--gris); margin-top:2px;}
+  .resumen-general{display:flex; gap:10px; margin-bottom:6px;}
+  .resumen-general .caja{flex:1; border:1px solid var(--linea); padding:14px 8px; text-align:center; border-radius:2px;}
+  .resumen-general .caja .num{font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--oro-suave);}
+  .resumen-general .caja .etq{font-size:10.5px; color:var(--gris); margin-top:2px;}
 
   textarea{width:100%; min-height:80px; background:var(--negro-2); border:1px solid var(--linea); color:var(--hueso); padding:10px 12px; font-family:'DM Sans',sans-serif; font-size:14px; border-radius:2px; resize:vertical;}
 
-  /* Rueda de vistas */
-  .rueda-wrap{position:relative; width:100%; max-width:420px; margin:8px auto 18px; aspect-ratio:1/1;}
-  .rueda-lineas{position:absolute; inset:0; width:100%; height:100%;}
-  .rueda-centro{position:absolute; width:44%; height:44%; left:28%; top:28%; border-radius:50%; overflow:hidden; border:2px solid var(--oro); background:var(--negro-2); box-shadow:0 0 0 6px rgba(217,169,78,0.08);}
-  .rueda-centro img{width:100%; height:100%; object-fit:cover; display:block;}
-  .rueda-centro .rueda-centro-label{position:absolute; bottom:0; left:0; right:0; text-align:center; font-size:10px; letter-spacing:0.06em; color:var(--negro); background:var(--oro); padding:3px 0; font-weight:700;}
-  .rueda-punto{position:absolute; width:21%; height:21%; border-radius:50%; overflow:hidden; border:2px solid rgba(217,169,78,0.5); transform:translate(-50%,-50%); cursor:pointer; background:var(--negro-2); transition:border-color .15s ease, box-shadow .15s ease;}
-  .rueda-punto img{width:100%; height:100%; object-fit:cover; display:block; opacity:0.92;}
-  .rueda-punto.activo{border-color:var(--oro-suave); box-shadow:0 0 0 4px rgba(232,200,126,0.25);}
-  .rueda-punto-etq{position:absolute; width:120px; text-align:center; font-size:10px; color:var(--gris); letter-spacing:0.02em; transform:translate(-50%,0);}
-
-  .vista-detalle{border:1px solid var(--linea); border-radius:2px; padding:16px 14px;}
-  .vista-detalle h3{font-size:19px; color:var(--oro-suave); margin-bottom:6px;}
-  .vista-detalle p{font-size:13px; color:var(--gris); line-height:1.55; margin:0 0 10px;}
-
-  .disclaimer-vistas{font-size:11.5px; color:var(--gris); text-align:center; line-height:1.5; margin:6px auto 20px; max-width:420px;}
+  .foto-anotada-wrap{position:relative; width:100%; border:1px solid var(--linea); border-radius:2px; overflow:hidden; background:var(--negro-2);}
+  .foto-anotada-wrap img{width:100%; display:block;}
+  .leyenda{display:flex; gap:16px; justify-content:center; margin:10px 0 16px; font-size:11.5px; color:var(--gris);}
+  .leyenda span{display:inline-flex; align-items:center; gap:6px;}
+  .leyenda i{width:9px; height:9px; border-radius:50%; display:inline-block;}
 
   @media print{
     body{background:#fff; color:#111;}
-    header, section .camara-box, .controles, .aviso, #pantalla-captura, .rueda-punto-etq{display:none !important;}
+    header, section .camara-box, .controles, .aviso, #pantalla-captura{display:none !important;}
     #reporte{display:block !important;}
-    .metrica, .vista-detalle{border-color:#ccc; break-inside:avoid;}
-    .metrica-top .nombre, h2, .vista-detalle h3{color:#111 !important;}
+    .metrica{border-color:#ccc; break-inside:avoid;}
+    .metrica-top .nombre, h2{color:#111 !important;}
     .barra{background:#eee;}
-    .rueda-centro{border-color:#111;}
+    .foto-anotada-wrap{border-color:#ccc;}
   }
 </style>
 </head>
@@ -141,30 +131,35 @@
       <button class="principal" id="btnAnalizar" style="display:none;">Analizar rostro</button>
     </div>
     <p class="aviso">
-      Herramienta orientativa de apoyo a la consulta. Las vistas y puntuaciones son <strong>estimaciones visuales
-      generadas por procesado de imagen</strong> a partir de una foto normal — no son un diagnóstico clínico ni
-      una captura real con luz UV, de Wood o polarizada. Deben interpretarse siempre junto con la valoración
-      profesional. Encuadra el rostro de frente, sin gafas ni maquillaje pesado, con luz uniforme.
+      Herramienta orientativa de apoyo a la consulta. Las puntuaciones y los puntos marcados sobre la foto son
+      <strong>estimaciones geométricas relativas</strong> a partir de los landmarks faciales — no son un
+      diagnóstico clínico ni una medición certificada. Deben interpretarse siempre junto con la valoración
+      profesional. Encuadra el rostro de frente, sin gafas, con luz uniforme.
     </p>
   </section>
 
   <section id="reporte">
     <div class="resumen-general">
-      <div class="caja"><div class="num" id="scoreGlobalPiel">–</div><div class="etq">Piel — índice general</div></div>
-      <div class="caja"><div class="num" id="scoreGlobalEstructura">–</div><div class="etq">Estructura — índice general</div></div>
+      <div class="caja"><div class="num" id="scoreGlobalFlacidez">–</div><div class="etq">Flacidez</div></div>
+      <div class="caja"><div class="num" id="scoreGlobalPiel">–</div><div class="etq">Piel</div></div>
+      <div class="caja"><div class="num" id="scoreGlobalEstructura">–</div><div class="etq">Estructura</div></div>
     </div>
 
-    <div class="bloque-titulo"><h2>Vistas de piel</h2><span>8 vistas simuladas</span></div>
-    <div class="rueda-wrap" id="ruedaWrap">
-      <svg class="rueda-lineas" id="ruedaLineas" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
-      <div class="rueda-centro">
-        <img id="vistaPrincipalImg" alt="Vista seleccionada">
-        <div class="rueda-centro-label" id="vistaPrincipalNombre">RGB</div>
-      </div>
-      <div id="ruedaPuntos"></div>
+    <div class="bloque-titulo"><h2>Puntos de flacidez</h2><span>sobre la foto capturada</span></div>
+    <div class="foto-anotada-wrap"><img id="fotoFlacidezImg" alt="Foto con puntos de flacidez marcados"></div>
+    <div class="leyenda">
+      <span><i style="background:var(--verde);"></i>Signos mínimos</span>
+      <span><i style="background:var(--ambar);"></i>Moderado</span>
+      <span><i style="background:var(--rojo);"></i>Marcado</span>
     </div>
-    <div class="vista-detalle" id="vistaDetalle"></div>
-    <p class="disclaimer-vistas">Las vistas UV, Wood, polarizadas, marrón y roja son simulaciones por software a partir de la foto en luz normal, no capturas espectrales reales.</p>
+    <p class="metrica-nota" style="margin-bottom:16px;">
+      Cada punto marca la posición real detectada; la línea indica la desviación respecto a una posición de
+      referencia más "sostenida". Es una estimación geométrica orientativa, no una medición clínica de firmeza.
+    </p>
+    <div id="grupoFlacidez"></div>
+
+    <div class="bloque-titulo"><h2>Piel</h2><span>tono y textura</span></div>
+    <div id="grupoPiel"></div>
 
     <div class="bloque-titulo"><h2>Estructura facial</h2><span>landmarks y proporciones</span></div>
     <div id="grupoEstructura"></div>
@@ -209,7 +204,6 @@
   let faceMesh = null;
   let faceMeshReady = false;
 
-  // ---------- Cámara ----------
   async function iniciarCamara(){
     if(stream){ stream.getTracks().forEach(t=>t.stop()); }
     estadoEl.style.display='block';
@@ -269,7 +263,6 @@
     capaCtx.clearRect(0,0,capa.width,capa.height);
   }
 
-  // ---------- FaceMesh ----------
   function initFaceMesh(){
     faceMesh = new FaceMesh({locateFile:(f)=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
     faceMesh.setOptions({
@@ -300,8 +293,8 @@
       }
       const landmarks = resultado.multiFaceLandmarks[0];
       const analisis = analizarRostro(frozenFrame, landmarks);
-      const vistas = generarVistas(frozenFrame);
-      renderizarInforme(analisis, vistas);
+      const flacidez = analizarFlacidez(frozenFrame, landmarks);
+      renderizarInforme(analisis, flacidez);
       pantallaCaptura.style.display='none';
       pantallaDatos.style.display='none';
       reporte.style.display='block';
@@ -319,6 +312,14 @@
   function mid(a,b){ return {x:(a.x+b.x)/2, y:(a.y+b.y)/2}; }
   function clamp01(v){ return Math.max(0, Math.min(1, v)); }
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function distSeg(p,a,b){
+    const abx=b.x-a.x, aby=b.y-a.y;
+    const len2 = abx*abx+aby*aby || 1e-6;
+    let t = ((p.x-a.x)*abx + (p.y-a.y)*aby)/len2;
+    t = clamp01(t);
+    const proj = {x:a.x+t*abx, y:a.y+t*aby};
+    return { dist: dist(p,proj), proj };
+  }
 
   function statsZona(ctx, w, h, cx, cy, ancho, alto){
     ancho = Math.max(6, Math.round(ancho));
@@ -367,7 +368,7 @@
   function escalaInversa(valor, k){ return 100 * (1/(1+valor/k)); }
   function escalaDesviacion(dev, tolerancia){ return 100 * (1 - clamp01(dev/tolerancia)); }
 
-  // ---------- Análisis (estructura + métricas de piel) ----------
+  // ---------- Estructura + piel (tono/textura) ----------
   function analizarRostro(canvasImg, landmarks){
     const w = canvasImg.width, h = canvasImg.height;
     const ctx = canvasImg.getContext('2d');
@@ -408,10 +409,6 @@
 
     const anchoBase = anchoRostro;
     const zFrente = statsZona(ctx, w, h, (L(109).x+L(338).x)/2, (frenteTop.y+ (L(105).y+L(334).y)/2)/2, anchoBase*0.42, altoRostro*0.14);
-    const zPeriOjoR = statsZona(ctx, w, h, L(33).x - anchoBase*0.02, L(33).y, anchoBase*0.10, altoRostro*0.09);
-    const zPeriOjoL = statsZona(ctx, w, h, L(263).x + anchoBase*0.02, L(263).y, anchoBase*0.10, altoRostro*0.09);
-    const zNasoR = statsZona(ctx, w, h, mid(L(129), L(61)).x, mid(L(129), L(61)).y, anchoBase*0.10, altoRostro*0.14);
-    const zNasoL = statsZona(ctx, w, h, mid(L(358), L(291)).x, mid(L(358), L(291)).y, anchoBase*0.10, altoRostro*0.14);
     const zMejillaR = statsZona(ctx, w, h, L(50).x, L(50).y, anchoBase*0.16, altoRostro*0.14);
     const zMejillaL = statsZona(ctx, w, h, L(280).x, L(280).y, anchoBase*0.16, altoRostro*0.14);
     const zOjeraR = statsZona(ctx, w, h, L(145).x, L(145).y + altoRostro*0.035, anchoBase*0.11, altoRostro*0.05);
@@ -423,13 +420,8 @@
     }
 
     const texFrente = zFrente ? zFrente.texVar : 0;
-    const texPeriorbital = media('texVar', zPeriOjoR, zPeriOjoL);
-    const texNasolabial = media('texVar', zNasoR, zNasoL);
     const texMejillas = media('texVar', zMejillaR, zMejillaL);
-
     const scoreArrugasFrente = escalaInversa(texFrente, 55);
-    const scoreArrugasPeriorbital = escalaInversa(texPeriorbital, 40);
-    const scoreArrugasNasolabial = escalaInversa(texNasolabial, 60);
     const scoreTextura = escalaInversa(texMejillas, 45);
 
     const pigStd = media('stdLum', zFrente, zMejillaR, zMejillaL);
@@ -445,162 +437,121 @@
     const difOjeras = Math.max(0, lumMejilla - lumOjera);
     const scoreOjeras = escalaInversa(difOjeras, 12);
 
-    const scoreSuperficie = Math.round((scoreArrugasFrente+scoreArrugasPeriorbital+scoreArrugasNasolabial+scoreTextura)/4);
-    const scoreSubsuperficie = Math.round((scorePigmentacion+scoreRojez+scoreOjeras)/3);
-    const scoreGlobalPiel = Math.round((scoreArrugasFrente+scoreArrugasPeriorbital+scoreArrugasNasolabial+scoreTextura+scorePigmentacion+scoreRojez+scoreOjeras)/7);
-    const scoreGlobalEstructura = Math.round((scoreSimetria+scoreTercios+scoreOjos+scoreNarizBoca)/4);
+    const piel = [
+      {clave:'arrugasFrente', nombre:'Líneas de expresión — frente', score:Math.round(scoreArrugasFrente), nota:'Textura y micro-relieve en la zona frontal.'},
+      {clave:'textura', nombre:'Textura y poro', score:Math.round(scoreTextura), nota:'Uniformidad de la superficie en mejillas.'},
+      {clave:'pigmentacion', nombre:'Pigmentación / manchas', score:Math.round(scorePigmentacion), nota:'Variabilidad de tono y zonas más oscuras localizadas.'},
+      {clave:'rojez', nombre:'Rojez / cuperosis aparente', score:Math.round(scoreRojez), nota:'Predominancia del canal rojo en mejillas.'},
+      {clave:'ojeras', nombre:'Ojeras', score:Math.round(scoreOjeras), nota:'Contraste de luminosidad bajo el ojo frente a la mejilla.'}
+    ];
 
-    return {
-      scores:{
-        scoreArrugasFrente:Math.round(scoreArrugasFrente),
-        scoreArrugasPeriorbital:Math.round(scoreArrugasPeriorbital),
-        scoreArrugasNasolabial:Math.round(scoreArrugasNasolabial),
-        scoreTextura:Math.round(scoreTextura),
-        scorePigmentacion:Math.round(scorePigmentacion),
-        scoreRojez:Math.round(scoreRojez),
-        scoreOjeras:Math.round(scoreOjeras),
-        scoreSuperficie, scoreSubsuperficie
-      },
-      estructura: [
-        {clave:'simetria', nombre:'Simetría facial', score:Math.round(scoreSimetria), nota:'Comparativa de posición de ojos, cejas, boca y mandíbula respecto al eje central.'},
-        {clave:'tercios', nombre:'Proporción de tercios', score:Math.round(scoreTercios), nota:'Equilibrio entre frente, tercio medio y tercio inferior.'},
-        {clave:'ojos', nombre:'Proporción ocular', score:Math.round(scoreOjos), nota:'Relación entre distancia interocular y anchura del ojo.'},
-        {clave:'narizBoca', nombre:'Proporción nariz / boca', score:Math.round(scoreNarizBoca), nota:'Relación clásica de anchura entre nariz y boca.'}
-      ],
-      scoreGlobalPiel, scoreGlobalEstructura
-    };
+    const estructura = [
+      {clave:'simetria', nombre:'Simetría facial', score:Math.round(scoreSimetria), nota:'Comparativa de posición de ojos, cejas, boca y mandíbula respecto al eje central.'},
+      {clave:'tercios', nombre:'Proporción de tercios', score:Math.round(scoreTercios), nota:'Equilibrio entre frente, tercio medio y tercio inferior.'},
+      {clave:'ojos', nombre:'Proporción ocular', score:Math.round(scoreOjos), nota:'Relación entre distancia interocular y anchura del ojo.'},
+      {clave:'narizBoca', nombre:'Proporción nariz / boca', score:Math.round(scoreNarizBoca), nota:'Relación clásica de anchura entre nariz y boca.'}
+    ];
+
+    const scoreGlobalPiel = Math.round(piel.reduce((a,b)=>a+b.score,0)/piel.length);
+    const scoreGlobalEstructura = Math.round(estructura.reduce((a,b)=>a+b.score,0)/estructura.length);
+
+    return { piel, estructura, scoreGlobalPiel, scoreGlobalEstructura };
   }
 
-  // ---------- Generación de las 8 vistas simuladas ----------
-  function generarVistas(frozenFrame){
-    const wOrig = frozenFrame.width, hOrig = frozenFrame.height;
-    const maxW = 560;
-    const escala = Math.min(1, maxW / wOrig);
-    const w = Math.round(wOrig*escala), h = Math.round(hOrig*escala);
+  // ---------- Flacidez: puntos sobre la foto real ----------
+  function analizarFlacidez(frozenFrame, landmarks){
+    const maxW = 720;
+    const escala = Math.min(1, maxW / frozenFrame.width);
+    const w = Math.round(frozenFrame.width*escala), h = Math.round(frozenFrame.height*escala);
 
-    const base = document.createElement('canvas');
-    base.width = w; base.height = h;
-    const bctx = base.getContext('2d');
-    bctx.drawImage(frozenFrame, 0, 0, w, h);
-    const src = bctx.getImageData(0,0,w,h);
-    const data = src.data;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(frozenFrame, 0, 0, w, h);
 
-    function nuevaSalida(){ return new ImageData(new Uint8ClampedArray(data.length), w, h); }
-    function toCanvas(imgData){
-      const c = document.createElement('canvas'); c.width=w; c.height=h;
-      c.getContext('2d').putImageData(imgData,0,0);
-      return c.toDataURL('image/jpeg', 0.86);
+    const L = (i)=>px(landmarks,i,w,h);
+    const anchoRostro = dist(L(234), L(454));
+
+    const marcadores = [];
+
+    function agregarSegmento(clave, ladoNombre, actual, refA, refB, tolerancia, normalizador){
+      const {dist:d, proj} = distSeg(actual, refA, refB);
+      const devNorm = d / normalizador;
+      const score = escalaDesviacion(devNorm, tolerancia);
+      marcadores.push({clave, lado:ladoNombre, actual, ideal:proj, score});
+    }
+    function agregarVertical(clave, ladoNombre, actual, idealY, tolerancia, normalizador){
+      const deficit = Math.max(0, actual.y - idealY);
+      const devNorm = deficit / normalizador;
+      const score = escalaDesviacion(devNorm, tolerancia);
+      marcadores.push({clave, lado:ladoNombre, actual, ideal:{x:actual.x, y:idealY}, score});
     }
 
-    // RGB
-    const rgbUrl = base.toDataURL('image/jpeg', 0.9);
+    // 1. Mandíbula / papada
+    agregarSegmento('papada','D', L(172), L(234), L(152), 0.05, anchoRostro);
+    agregarSegmento('papada','I', L(397), L(454), L(152), 0.05, anchoRostro);
 
-    // UV simulada
-    const uv = nuevaSalida();
-    for(let i=0;i<data.length;i+=4){
-      const r=data[i],g=data[i+1],b=data[i+2];
-      const warmth = (r-b)*1.3 + (r-g)*0.4;
-      const intensity = clamp(255 - clamp(warmth*1.9, -40, 150), 20, 255) * 0.92;
-      uv.data[i]   = intensity*0.5;
-      uv.data[i+1] = intensity*0.18;
-      uv.data[i+2] = intensity*0.92;
-      uv.data[i+3] = 255;
+    // 2. Mejillas / pómulos
+    agregarSegmento('mejilla','D', L(50), L(33), L(61), 0.05, anchoRostro);
+    agregarSegmento('mejilla','I', L(280), L(263), L(291), 0.05, anchoRostro);
+
+    // 3. Párpado / ceja (ptosis)
+    const ojoAnchoR = dist(L(33), L(133)), ojoAnchoL = dist(L(362), L(263));
+    agregarVertical('ptosis','D', L(70), L(33).y - 0.38*ojoAnchoR, 0.5, ojoAnchoR);
+    agregarVertical('ptosis','I', L(300), L(263).y - 0.38*ojoAnchoL, 0.5, ojoAnchoL);
+
+    // 4. Surco nasogeniano
+    agregarSegmento('nasogeniano','D', L(205), L(129), L(61), 0.045, anchoRostro);
+    agregarSegmento('nasogeniano','I', L(425), L(358), L(291), 0.045, anchoRostro);
+
+    // 5. Líneas de marioneta
+    const anchoBoca = dist(L(61), L(291));
+    const labioCentro = L(13).y;
+    agregarVertical('marioneta','D', L(61), labioCentro + 0.10*anchoBoca, 0.45, anchoBoca);
+    agregarVertical('marioneta','I', L(291), labioCentro + 0.10*anchoBoca, 0.45, anchoBoca);
+
+    // Dibujo sobre la foto
+    marcadores.forEach(m=>{
+      const color = colorPorScore(m.score);
+      ctx.setLineDash([4,3]);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(m.ideal.x, m.ideal.y);
+      ctx.lineTo(m.actual.x, m.actual.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.beginPath();
+      ctx.arc(m.ideal.x, m.ideal.y, 3.5, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(244,241,234,0.75)';
+      ctx.lineWidth = 1.3;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(m.actual.x, m.actual.y, 5.5, 0, Math.PI*2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(10,10,10,0.6)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    function promedioClave(clave){
+      const vs = marcadores.filter(m=>m.clave===clave).map(m=>m.score);
+      return Math.round(vs.reduce((a,b)=>a+b,0)/vs.length);
     }
-    const uvUrl = toCanvas(uv);
 
-    // Luz de Wood simulada
-    const wood = nuevaSalida();
-    for(let i=0;i<data.length;i+=4){
-      const r=data[i],g=data[i+1],b=data[i+2];
-      const lum = 0.299*r+0.587*g+0.114*b;
-      const contrastado = Math.pow(lum/255, 0.7)*255;
-      wood.data[i]   = contrastado*0.10;
-      wood.data[i+1] = contrastado*0.58;
-      wood.data[i+2] = contrastado*0.85;
-      wood.data[i+3] = 255;
-    }
-    const woodUrl = toCanvas(wood);
+    const zonas = [
+      {clave:'papada', nombre:'Mandíbula / papada', score:promedioClave('papada'), nota:'Contorno mandibular respecto a la línea oreja–mentón.'},
+      {clave:'mejilla', nombre:'Mejillas / pómulos', score:promedioClave('mejilla'), nota:'Posición del pómulo respecto al eje ojo–comisura.'},
+      {clave:'ptosis', nombre:'Párpado y ceja', score:promedioClave('ptosis'), nota:'Altura de la cola de ceja respecto al ojo.'},
+      {clave:'nasogeniano', nombre:'Surco nasogeniano', score:promedioClave('nasogeniano'), nota:'Profundidad del surco entre ala nasal y comisura.'},
+      {clave:'marioneta', nombre:'Líneas de marioneta', score:promedioClave('marioneta'), nota:'Caída de la comisura labial respecto al centro del labio.'}
+    ];
+    const scoreGlobalFlacidez = Math.round(zonas.reduce((a,b)=>a+b.score,0)/zonas.length);
 
-    // Luz marrón (pigmentación)
-    const brown = nuevaSalida();
-    for(let i=0;i<data.length;i+=4){
-      const r=data[i],g=data[i+1],b=data[i+2];
-      const warmth = (r-b)*1.1 + (r-g)*0.3;
-      const base2 = clamp(70 + warmth*1.15, 0, 210);
-      brown.data[i]   = clamp(base2+85,0,255);
-      brown.data[i+1] = clamp(base2+45,0,255);
-      brown.data[i+2] = clamp(base2+8,0,255);
-      brown.data[i+3] = 255;
-    }
-    const brownUrl = toCanvas(brown);
-
-    // Luz roja (vascular / rojez)
-    const red = nuevaSalida();
-    for(let i=0;i<data.length;i+=4){
-      const r=data[i],g=data[i+1],b=data[i+2];
-      const redSignal = r-(g+b)/2;
-      const value = clamp(70 + redSignal*3.1, 0, 255);
-      red.data[i]   = value;
-      red.data[i+1] = value*0.22;
-      red.data[i+2] = value*0.20;
-      red.data[i+3] = 255;
-    }
-    const redUrl = toCanvas(red);
-
-    // Luz mixta (tono equilibrado, look clínico)
-    const mixed = nuevaSalida();
-    for(let i=0;i<data.length;i+=4){
-      const r=data[i],g=data[i+1],b=data[i+2];
-      const lum = 0.299*r+0.587*g+0.114*b;
-      mixed.data[i]   = lum*0.88;
-      mixed.data[i+1] = lum*0.93;
-      mixed.data[i+2] = lum*1.02;
-      mixed.data[i+3] = 255;
-    }
-    const mixedUrl = toCanvas(mixed);
-
-    // Polarizada positiva (textura de superficie)
-    const lumArr = new Float32Array(w*h);
-    for(let i=0,p=0;i<data.length;i+=4,p++){ lumArr[p] = 0.299*data[i]+0.587*data[i+1]+0.114*data[i+2]; }
-    const polpos = nuevaSalida();
-    for(let y=0;y<h;y++){
-      for(let x=0;x<w;x++){
-        const p = y*w+x;
-        let val;
-        if(x>0 && x<w-1 && y>0 && y<h-1){
-          const c = lumArr[p];
-          const l4 = lumArr[p-1]+lumArr[p+1]+lumArr[p-w]+lumArr[p+w];
-          const edge = 4*c - l4;
-          val = clamp(c*0.55 + edge*2.4 + 60, 0, 255);
-        } else {
-          val = lumArr[p];
-        }
-        const idx = p*4;
-        polpos.data[idx]=val; polpos.data[idx+1]=val; polpos.data[idx+2]=val*0.98; polpos.data[idx+3]=255;
-      }
-    }
-    const polposUrl = toCanvas(polpos);
-
-    // Polarizada negativa (subsuperficial: pigmento + vascular, bajo contraste)
-    const polneg = nuevaSalida();
-    for(let i=0;i<data.length;i+=4){
-      const r=data[i],g=data[i+1],b=data[i+2];
-      const warmth = (r-b)*0.9 + (r-g)*0.3;
-      const redSignal = r-(g+b)/2;
-      let value = 118 + warmth*0.55 + redSignal*0.55;
-      value = 128 + (value-128)*0.55;
-      value = clamp(value,0,255);
-      polneg.data[i]   = clamp(value*1.05,0,255);
-      polneg.data[i+1] = clamp(value*0.62,0,255);
-      polneg.data[i+2] = clamp(value*0.5,0,255);
-      polneg.data[i+3] = 255;
-    }
-    const polnegUrl = toCanvas(polneg);
-
-    return {
-      rgb:{url:rgbUrl}, uv:{url:uvUrl}, wood:{url:woodUrl}, brown:{url:brownUrl},
-      red:{url:redUrl}, mixed:{url:mixedUrl}, polpos:{url:polposUrl}, polneg:{url:polnegUrl}
-    };
+    return { url: canvas.toDataURL('image/jpeg', 0.9), zonas, scoreGlobalFlacidez };
   }
 
   // ---------- Render ----------
@@ -615,25 +566,25 @@
     if(score>=45) return 'Moderado';
     return 'Marcado';
   }
-  function sugerenciaPorClave(clave, score){
-    if(score>=65) return '';
-    const mapa = {
-      arrugasFrente:'Valorar protocolo de tensado/rejuvenecimiento facial (p. ej. HIFU facial).',
-      arrugasPeriorbital:'Valorar protocolo de tensado/rejuvenecimiento facial (p. ej. HIFU facial).',
-      arrugasNasolabial:'Valorar protocolo de tensado/rejuvenecimiento facial (p. ej. HIFU facial).',
-      textura:'Valorar renovación/exfoliación y cuidado de textura.',
-      pigmentacion:'Valorar protocolo despigmentante y protección solar.',
-      rojez:'Valorar rutina calmante; descartar causas no estéticas si es intensa.',
-      ojeras:'Informativo — valorar según hábitos de descanso de la clienta.'
-    };
-    return mapa[clave] || '';
-  }
+  const SUGERENCIAS = {
+    papada:'Valorar protocolo de tensado facial (p. ej. HIFU facial).',
+    mejilla:'Valorar protocolo de tensado facial (p. ej. HIFU facial).',
+    ptosis:'Valorar tensado de tercio superior (p. ej. HIFU facial).',
+    nasogeniano:'Valorar tensado/relleno según criterio profesional.',
+    marioneta:'Valorar tensado facial (p. ej. HIFU facial).',
+    arrugasFrente:'Valorar protocolo de tensado/rejuvenecimiento facial.',
+    textura:'Valorar renovación/exfoliación y cuidado de textura.',
+    pigmentacion:'Valorar protocolo despigmentante y protección solar.',
+    rojez:'Valorar rutina calmante; descartar causas no estéticas si es intensa.',
+    ojeras:'Informativo — valorar según hábitos de descanso de la clienta.'
+  };
 
   function renderBloque(contenedorId, items){
     const cont = document.getElementById(contenedorId);
     cont.innerHTML='';
     items.forEach(it=>{
       const color = colorPorScore(it.score);
+      const sugerencia = it.score < 65 ? (SUGERENCIAS[it.clave] || '') : '';
       const div = document.createElement('div');
       div.className='metrica';
       div.innerHTML = `
@@ -642,7 +593,7 @@
           <span class="etiqueta" style="color:${color}; border:1px solid ${color};">${etiquetaPorScore(it.score)}</span>
         </div>
         <div class="barra"><div class="barra-fill" style="width:${it.score}%; background:${color};"></div></div>
-        <div class="metrica-nota">${it.nota}</div>
+        <div class="metrica-nota">${it.nota}${sugerencia ? '<br><em>'+sugerencia+'</em>' : ''}</div>
         <div class="ajuste">
           <label>Ajustar</label>
           <input type="range" min="0" max="100" value="${it.score}" data-clave="${it.clave}" class="rangoAjuste">
@@ -666,90 +617,13 @@
     });
   }
 
-  const VISTAS_CONFIG = [
-    {id:'rgb', nombre:'RGB', corto:'RGB', desc:'Fotografía estándar en luz natural, sin procesar. Es la referencia visual base para comparar el resto de vistas.', scoreKey:null},
-    {id:'uv', nombre:'UV simulada', corto:'UV', desc:'Realce del contraste de pigmentación para aproximar cómo se vería el daño solar acumulado. Simulación por procesado de imagen, no una captura UV real.', scoreKey:'scorePigmentacion'},
-    {id:'wood', nombre:"Luz de Wood (simulada)", corto:'Wood', desc:'Otra variante de realce de pigmentación, con paleta inspirada en las lámparas de Wood. Simulada, no diagnóstica.', scoreKey:'scorePigmentacion'},
-    {id:'brown', nombre:'Luz marrón', corto:'Marrón', desc:'Aísla los tonos de melanina de la piel para visualizar manchas superficiales con más claridad.', scoreKey:'scorePigmentacion'},
-    {id:'red', nombre:'Luz roja', corto:'Roja', desc:'Resalta el predominio del canal rojo: rojeces, cuperosis aparente y vascularización superficial.', scoreKey:'scoreRojez'},
-    {id:'mixed', nombre:'Luz mixta', corto:'Mixta', desc:'Vista equilibrada de tipo "clínico", combinando tono y textura general de la piel sin acentuar ningún signo en particular.', scoreKey:'scoreGlobalPiel'},
-    {id:'polpos', nombre:'Polarizada positiva', corto:'Pol. +', desc:'Acentúa el relieve superficial de la piel: líneas de expresión y textura del poro.', scoreKey:'scoreSuperficie'},
-    {id:'polneg', nombre:'Polarizada negativa', corto:'Pol. −', desc:'Aproximación visual a la información subsuperficial: combinación de pigmento, vascularización y ojeras.', scoreKey:'scoreSubsuperficie'}
-  ];
-
-  let vistaActualId = 'rgb';
-  let vistasGlobal = null;
-  let scoresGlobal = null;
-
-  function seleccionarVista(id){
-    vistaActualId = id;
-    const cfg = VISTAS_CONFIG.find(v=>v.id===id);
-    document.getElementById('vistaPrincipalImg').src = vistasGlobal[id].url;
-    document.getElementById('vistaPrincipalNombre').textContent = cfg.corto;
-    document.querySelectorAll('.rueda-punto').forEach(p=>p.classList.toggle('activo', p.dataset.id===id));
-
-    const detalle = document.getElementById('vistaDetalle');
-    let chip = '';
-    if(cfg.scoreKey){
-      const score = scoresGlobal[cfg.scoreKey];
-      const color = colorPorScore(score);
-      chip = `
-        <div class="metrica-top" style="margin-top:10px;">
-          <span class="nombre" style="font-size:13px; color:var(--gris);">Índice orientativo de esta vista</span>
-          <span class="etiqueta" style="color:${color}; border:1px solid ${color};">${etiquetaPorScore(score)}</span>
-        </div>
-        <div class="barra"><div class="barra-fill" style="width:${score}%; background:${color};"></div></div>
-      `;
-    }
-    detalle.innerHTML = `<h3>${cfg.nombre}</h3><p>${cfg.desc}</p>${chip}`;
-  }
-
-  function construirRueda(vistas){
-    const cont = document.getElementById('ruedaPuntos');
-    cont.innerHTML = '';
-    const svg = document.getElementById('ruedaLineas');
-    svg.innerHTML = '';
-    const orden = ['uv','wood','red','polpos','brown','polneg','mixed'];
-    const n = orden.length;
-    orden.forEach((id,i)=>{
-      const angle = (-90 + i*(360/n)) * Math.PI/180;
-      const radio = 41;
-      const cx = 50 + radio*Math.cos(angle);
-      const cy = 50 + radio*Math.sin(angle);
-
-      const linea = document.createElementNS('http://www.w3.org/2000/svg','line');
-      linea.setAttribute('x1',50); linea.setAttribute('y1',50);
-      linea.setAttribute('x2',cx); linea.setAttribute('y2',cy);
-      linea.setAttribute('stroke','rgba(217,169,78,0.28)');
-      linea.setAttribute('stroke-width','0.4');
-      svg.appendChild(linea);
-
-      const cfg = VISTAS_CONFIG.find(v=>v.id===id);
-      const punto = document.createElement('div');
-      punto.className = 'rueda-punto';
-      punto.dataset.id = id;
-      punto.style.left = cx+'%';
-      punto.style.top = cy+'%';
-      punto.innerHTML = `<img src="${vistas[id].url}" alt="${cfg.nombre}">`;
-      punto.addEventListener('click', ()=>seleccionarVista(id));
-      cont.appendChild(punto);
-
-      const etq = document.createElement('div');
-      etq.className='rueda-punto-etq';
-      etq.style.left = cx+'%';
-      etq.style.top = (cy>50 ? cy+13 : cy-19)+'%';
-      etq.textContent = cfg.corto;
-      cont.appendChild(etq);
-    });
-  }
-
-  function renderizarInforme(analisis, vistas){
-    vistasGlobal = vistas;
-    scoresGlobal = analisis.scores;
+  function renderizarInforme(analisis, flacidez){
     document.getElementById('scoreGlobalPiel').textContent = analisis.scoreGlobalPiel;
     document.getElementById('scoreGlobalEstructura').textContent = analisis.scoreGlobalEstructura;
-    construirRueda(vistas);
-    seleccionarVista('rgb');
+    document.getElementById('scoreGlobalFlacidez').textContent = flacidez.scoreGlobalFlacidez;
+    document.getElementById('fotoFlacidezImg').src = flacidez.url;
+    renderBloque('grupoFlacidez', flacidez.zonas);
+    renderBloque('grupoPiel', analisis.piel);
     renderBloque('grupoEstructura', analisis.estructura);
   }
 
