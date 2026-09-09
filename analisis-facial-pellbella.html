@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Análisis Facial · Pellbella</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --negro:#0A0A0A;
+    --negro-2:#151515;
+    --oro:#D9A94E;
+    --oro-suave:#E8C87E;
+    --hueso:#F4F1EA;
+    --gris:#8C8880;
+    --verde:#7FA87F;
+    --ambar:#D9A94E;
+    --rojo:#B5654E;
+    --linea:rgba(217,169,78,0.22);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; background:var(--negro); color:var(--hueso); font-family:'DM Sans',sans-serif;}
+  h1,h2,h3{font-family:'Cormorant Garamond',serif; font-weight:500; margin:0;}
+  .wrap{max-width:640px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column;}
+
+  header{padding:22px 20px 16px; border-bottom:1px solid var(--linea);}
+  header .marca{display:flex; align-items:baseline; gap:10px;}
+  header .marca .comma{color:var(--oro); font-size:28px; line-height:1; font-family:'Cormorant Garamond',serif; font-style:italic;}
+  header h1{font-size:26px; letter-spacing:0.02em; color:var(--hueso);}
+  header p{margin:4px 0 0; font-size:13px; color:var(--gris);}
+
+  section{padding:18px 20px;}
+  .campo{margin-bottom:12px;}
+  .campo label{display:block; font-size:12px; color:var(--gris); margin-bottom:6px;}
+  .campo input{width:100%; background:var(--negro-2); border:1px solid var(--linea); color:var(--hueso); padding:10px 12px; border-radius:2px; font-family:'DM Sans',sans-serif; font-size:15px;}
+  .fila{display:flex; gap:12px;}
+  .fila .campo{flex:1;}
+
+  .camara-box{position:relative; width:100%; aspect-ratio:3/4; background:var(--negro-2); border:1px solid var(--linea); overflow:hidden; border-radius:2px;}
+  video, canvas.capa{position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;}
+  canvas.capa{pointer-events:none;}
+  .camara-estado{position:absolute; bottom:10px; left:0; right:0; text-align:center; font-size:12px; color:var(--oro-suave); background:rgba(10,10,10,0.55); padding:6px 0; letter-spacing:0.02em;}
+
+  .controles{display:flex; gap:10px; margin-top:12px;}
+  button{flex:1; font-family:'DM Sans',sans-serif; font-size:14px; padding:13px 10px; border-radius:2px; border:1px solid var(--oro); background:transparent; color:var(--oro-suave); cursor:pointer; transition:background .15s ease;}
+  button.principal{background:var(--oro); color:var(--negro); font-weight:700;}
+  button:disabled{opacity:0.35; cursor:default;}
+  button.texto{border-color:transparent; color:var(--gris);}
+  button:active:not(:disabled){background:var(--oro-suave); color:var(--negro);}
+  button.principal:active:not(:disabled){background:var(--oro-suave);}
+
+  .aviso{font-size:12px; line-height:1.5; color:var(--gris); border-top:1px solid var(--linea); margin-top:16px; padding-top:12px;}
+
+  #reporte{display:none;}
+  .bloque-titulo{display:flex; align-items:baseline; justify-content:space-between; margin:26px 0 12px;}
+  .bloque-titulo h2{font-size:20px; color:var(--oro-suave);}
+  .bloque-titulo span{font-size:12px; color:var(--gris);}
+
+  .metrica{border:1px solid var(--linea); border-radius:2px; padding:14px 14px 12px; margin-bottom:10px;}
+  .metrica-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+  .metrica-top .nombre{font-size:15px; color:var(--hueso);}
+  .metrica-top .etiqueta{font-size:12px; padding:2px 8px; border-radius:20px; font-weight:500;}
+  .barra{height:5px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; margin-bottom:8px;}
+  .barra-fill{height:100%; border-radius:4px;}
+  .metrica-nota{font-size:12.5px; color:var(--gris); line-height:1.5;}
+  .ajuste{display:flex; align-items:center; gap:8px; margin-top:8px;}
+  .ajuste label{font-size:11px; color:var(--gris);}
+  .ajuste input[type=range]{flex:1; accent-color:var(--oro);}
+  .ajuste .valor{font-size:12px; color:var(--oro-suave); width:32px; text-align:right;}
+
+  .resumen-general{display:flex; gap:12px; margin-bottom:6px;}
+  .resumen-general .caja{flex:1; border:1px solid var(--linea); padding:16px 14px; text-align:center; border-radius:2px;}
+  .resumen-general .caja .num{font-family:'Cormorant Garamond',serif; font-size:34px; color:var(--oro-suave);}
+  .resumen-general .caja .etq{font-size:11px; color:var(--gris); margin-top:2px;}
+
+  textarea{width:100%; min-height:80px; background:var(--negro-2); border:1px solid var(--linea); color:var(--hueso); padding:10px 12px; font-family:'DM Sans',sans-serif; font-size:14px; border-radius:2px; resize:vertical;}
+
+  @media print{
+    body{background:#fff; color:#111;}
+    header, section .camara-box, .controles, .aviso, #pantalla-captura{display:none !important;}
+    #reporte{display:block !important;}
+    .metrica{border-color:#ccc; break-inside:avoid;}
+    .metrica-top .nombre, h2{color:#111 !important;}
+    .barra{background:#eee;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="marca"><span class="comma">’</span><h1>Pellbella</h1></div>
+    <p>Análisis facial asistido — uso profesional en cabina</p>
+  </header>
+
+  <section id="pantalla-datos">
+    <div class="fila">
+      <div class="campo">
+        <label>Nombre de la clienta</label>
+        <input id="nombreClienta" type="text" placeholder="Opcional">
+      </div>
+      <div class="campo">
+        <label>Fecha</label>
+        <input id="fechaConsulta" type="date">
+      </div>
+    </div>
+  </section>
+
+  <section id="pantalla-captura">
+    <div class="camara-box">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="capa" class="capa"></canvas>
+      <div class="camara-estado" id="estado">Iniciando cámara…</div>
+    </div>
+    <div class="controles">
+      <button class="texto" id="btnCambiarCam">Cambiar cámara</button>
+      <button class="principal" id="btnCapturar" disabled>Capturar</button>
+      <button class="texto" id="btnRepetir" style="display:none;">Repetir</button>
+    </div>
+    <div class="controles" style="margin-top:8px;">
+      <button class="principal" id="btnAnalizar" style="display:none;">Analizar rostro</button>
+    </div>
+    <p class="aviso">
+      Herramienta orientativa de apoyo a la consulta. Las puntuaciones son estimaciones visuales relativas
+      (no un diagnóstico clínico ni una medición dermatológica certificada) y deben interpretarse siempre
+      junto con la valoración profesional. Encuadra el rostro de frente, sin gafas ni maquillaje pesado, con
+      luz uniforme, para obtener una estimación más fiable.
+    </p>
+  </section>
+
+  <section id="reporte">
+    <div class="resumen-general">
+      <div class="caja"><div class="num" id="scoreGlobalPiel">–</div><div class="etq">Piel — índice general</div></div>
+      <div class="caja"><div class="num" id="scoreGlobalEstructura">–</div><div class="etq">Estructura — índice general</div></div>
+    </div>
+
+    <div class="bloque-titulo"><h2>Piel</h2><span>zonas analizadas por imagen</span></div>
+    <div id="grupoPiel"></div>
+
+    <div class="bloque-titulo"><h2>Estructura facial</h2><span>landmarks y proporciones</span></div>
+    <div id="grupoEstructura"></div>
+
+    <div class="campo" style="margin-top:18px;">
+      <label>Notas del profesional</label>
+      <textarea id="notasProfesional" placeholder="Observaciones, protocolo propuesto, seguimiento…"></textarea>
+    </div>
+
+    <div class="controles" style="margin-top:16px; margin-bottom:26px;">
+      <button class="texto" id="btnNuevoAnalisis">Nuevo análisis</button>
+      <button class="principal" id="btnImprimir">Guardar / Imprimir informe</button>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+<script>
+(function(){
+  "use strict";
+
+  const video = document.getElementById('video');
+  const capa = document.getElementById('capa');
+  const capaCtx = capa.getContext('2d');
+  const estadoEl = document.getElementById('estado');
+  const btnCapturar = document.getElementById('btnCapturar');
+  const btnRepetir = document.getElementById('btnRepetir');
+  const btnAnalizar = document.getElementById('btnAnalizar');
+  const btnCambiarCam = document.getElementById('btnCambiarCam');
+  const btnNuevoAnalisis = document.getElementById('btnNuevoAnalisis');
+  const btnImprimir = document.getElementById('btnImprimir');
+  const pantallaCaptura = document.getElementById('pantalla-captura');
+  const pantallaDatos = document.getElementById('pantalla-datos');
+  const reporte = document.getElementById('reporte');
+
+  document.getElementById('fechaConsulta').valueAsDate = new Date();
+
+  let currentFacing = 'user';
+  let stream = null;
+  let frozenFrame = null; // ImageData-holding canvas
+  let faceMesh = null;
+  let faceMeshReady = false;
+
+  // ---------- Cámara ----------
+  async function iniciarCamara(){
+    if(stream){ stream.getTracks().forEach(t=>t.stop()); }
+    estadoEl.style.display='block';
+    estadoEl.textContent='Iniciando cámara…';
+    btnCapturar.disabled = true;
+    try{
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: currentFacing, width:{ideal:1280}, height:{ideal:1280} },
+        audio:false
+      });
+      video.srcObject = stream;
+      await video.play();
+      estadoEl.textContent='Encuadra el rostro de frente';
+      btnCapturar.disabled = false;
+    }catch(err){
+      estadoEl.textContent='No se pudo acceder a la cámara. Revisa los permisos del navegador.';
+    }
+  }
+
+  btnCambiarCam.addEventListener('click', ()=>{
+    currentFacing = currentFacing === 'user' ? 'environment' : 'user';
+    iniciarCamara();
+  });
+
+  // ---------- Captura ----------
+  btnCapturar.addEventListener('click', ()=>{
+    const w = video.videoWidth, h = video.videoHeight;
+    capa.width = w; capa.height = h;
+    frozenFrame = document.createElement('canvas');
+    frozenFrame.width = w; frozenFrame.height = h;
+    frozenFrame.getContext('2d').drawImage(video, 0, 0, w, h);
+    capaCtx.drawImage(frozenFrame, 0, 0);
+    video.style.display='none';
+    estadoEl.style.display='none';
+    btnCapturar.style.display='none';
+    btnRepetir.style.display='block';
+    btnAnalizar.style.display='block';
+    btnCambiarCam.style.display='none';
+  });
+
+  btnRepetir.addEventListener('click', reiniciarCaptura);
+  btnNuevoAnalisis.addEventListener('click', ()=>{
+    reporte.style.display='none';
+    pantallaDatos.style.display='block';
+    pantallaCaptura.style.display='block';
+    reiniciarCaptura();
+  });
+
+  function reiniciarCaptura(){
+    frozenFrame = null;
+    video.style.display='block';
+    estadoEl.style.display='block';
+    btnCapturar.style.display='block';
+    btnCapturar.disabled = false;
+    btnRepetir.style.display='none';
+    btnAnalizar.style.display='none';
+    btnCambiarCam.style.display='block';
+    capaCtx.clearRect(0,0,capa.width,capa.height);
+  }
+
+  // ---------- FaceMesh ----------
+  function initFaceMesh(){
+    faceMesh = new FaceMesh({locateFile:(f)=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
+    faceMesh.setOptions({
+      staticImageMode: true,
+      maxNumFaces: 1,
+      refineLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
+    faceMeshReady = true;
+  }
+
+  btnAnalizar.addEventListener('click', async ()=>{
+    if(!frozenFrame) return;
+    btnAnalizar.disabled = true;
+    btnAnalizar.textContent = 'Analizando…';
+    try{
+      if(!faceMeshReady) initFaceMesh();
+      const resultado = await new Promise((resolve, reject)=>{
+        faceMesh.onResults((r)=>resolve(r));
+        faceMesh.send({image: frozenFrame}).catch(reject);
+      });
+      if(!resultado.multiFaceLandmarks || resultado.multiFaceLandmarks.length === 0){
+        alert('No se ha detectado un rostro con claridad. Repite la captura con mejor luz y encuadre frontal.');
+        btnAnalizar.disabled = false;
+        btnAnalizar.textContent = 'Analizar rostro';
+        return;
+      }
+      const landmarks = resultado.multiFaceLandmarks[0];
+      dibujarLandmarks(landmarks);
+      const analisis = analizarRostro(frozenFrame, landmarks);
+      renderizarInforme(analisis);
+      pantallaCaptura.style.display='none';
+      pantallaDatos.style.display='none';
+      reporte.style.display='block';
+      window.scrollTo(0,0);
+    }catch(e){
+      alert('Ha ocurrido un problema durante el análisis. Comprueba la conexión (la detección facial se carga desde internet la primera vez) e inténtalo de nuevo.');
+    }
+    btnAnalizar.disabled = false;
+    btnAnalizar.textContent = 'Analizar rostro';
+  });
+
+  function dibujarLandmarks(landmarks){
+    const w = capa.width, h = capa.height;
+    capaCtx.drawImage(frozenFrame,0,0);
+    capaCtx.fillStyle = 'rgba(217,169,78,0.55)';
+    for(const p of landmarks){
+      capaCtx.beginPath();
+      capaCtx.arc(p.x*w, p.y*h, 1.2, 0, Math.PI*2);
+      capaCtx.fill();
+    }
+  }
+
+  // ---------- Utilidades geométricas ----------
+  function px(landmarks, i, w, h){ return {x: landmarks[i].x*w, y: landmarks[i].y*h}; }
+  function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+  function mid(a,b){ return {x:(a.x+b.x)/2, y:(a.y+b.y)/2}; }
+  function clamp01(v){ return Math.max(0, Math.min(1, v)); }
+
+  // Extrae una región rectangular (en coordenadas de imagen) centrada entre landmarks dados,
+  // con un margen proporcional, y devuelve estadísticos de la zona.
+  function statsZona(ctx, w, h, cx, cy, ancho, alto){
+    ancho = Math.max(6, Math.round(ancho));
+    alto = Math.max(6, Math.round(alto));
+    let x0 = Math.round(cx - ancho/2), y0 = Math.round(cy - alto/2);
+    x0 = Math.max(0, Math.min(w-ancho, x0));
+    y0 = Math.max(0, Math.min(h-alto, y0));
+    let data;
+    try{ data = ctx.getImageData(x0,y0,ancho,alto).data; }
+    catch(e){ return null; }
+
+    let sumLum=0, sumR=0, sumG=0, sumB=0, n=0;
+    const lum = new Float32Array(ancho*alto);
+    for(let i=0, p=0; i<data.length; i+=4, p++){
+      const r=data[i], g=data[i+1], b=data[i+2];
+      const l = 0.299*r + 0.587*g + 0.114*b;
+      lum[p] = l;
+      sumLum += l; sumR += r; sumG += g; sumB += b; n++;
+    }
+    const meanLum = sumLum/n, meanR = sumR/n, meanG = sumG/n, meanB = sumB/n;
+    let varLum = 0;
+    for(let p=0;p<n;p++){ varLum += (lum[p]-meanLum)*(lum[p]-meanLum); }
+    varLum /= n;
+    const stdLum = Math.sqrt(varLum);
+
+    // Laplaciano simple para textura (bordes finos: arrugas / poros)
+    let edgeSum = 0, edgeCount = 0;
+    for(let y=1; y<alto-1; y++){
+      for(let x=1; x<ancho-1; x++){
+        const c = lum[y*ancho+x];
+        const l4 = lum[y*ancho+x-1] + lum[y*ancho+x+1] + lum[(y-1)*ancho+x] + lum[(y+1)*ancho+x];
+        const val = 4*c - l4;
+        edgeSum += val*val;
+        edgeCount++;
+      }
+    }
+    const texVar = edgeCount ? edgeSum/edgeCount : 0;
+
+    // % de píxeles notablemente más oscuros que la media local (proxy de manchas)
+    let oscuros = 0;
+    const umbral = meanLum - 1.3*stdLum;
+    for(let p=0;p<n;p++){ if(lum[p] < umbral) oscuros++; }
+    const pctOscuros = oscuros/n;
+
+    return { meanLum, meanR, meanG, meanB, stdLum, texVar, pctOscuros, x0, y0, ancho, alto };
+  }
+
+  function escalaInversa(valor, k){
+    // valor alto = más signo visible -> score bajo. Escala suave.
+    return 100 * (1/(1+valor/k));
+  }
+  function escalaDesviacion(dev, tolerancia){
+    // dev = desviación respecto al ideal (0 = ideal). tolerancia = a partir de qué desviación el score cae a ~0
+    return 100 * (1 - clamp01(dev/tolerancia));
+  }
+
+  // ---------- Análisis principal ----------
+  function analizarRostro(canvasImg, landmarks){
+    const w = canvasImg.width, h = canvasImg.height;
+    const ctx = canvasImg.getContext('2d');
+    const L = (i)=>px(landmarks,i,w,h);
+
+    // Referencias de línea media y tamaño de rostro
+    const frenteTop = L(10), nasion = L(168), narizBase = L(2), menton = L(152);
+    const mandR = L(234), mandL = L(454);
+    const anchoRostro = dist(mandR, mandL);
+    const altoRostro = dist(frenteTop, menton);
+    const midlineX = (frenteTop.x+nasion.x+narizBase.x+menton.x)/4;
+
+    // --- Simetría ---
+    const paresSim = [
+      [L(33), L(263)], [L(133), L(362)], [L(70), L(300)], [L(105), L(334)],
+      [L(61), L(291)], [L(50), L(280)], [mandR, mandL], [L(129), L(358)]
+    ];
+    let devX=0, devY=0;
+    for(const [pl, pr] of paresSim){
+      devX += Math.abs(Math.abs(pl.x-midlineX) - Math.abs(pr.x-midlineX));
+      devY += Math.abs(pl.y - pr.y);
+    }
+    devX /= paresSim.length; devY /= paresSim.length;
+    const asimetriaIdx = (devX*0.7 + devY*0.3) / anchoRostro;
+    const scoreSimetria = escalaDesviacion(asimetriaIdx, 0.09);
+
+    // --- Proporciones (tercios) ---
+    const t1 = dist(frenteTop, nasion), t2 = dist(nasion, narizBase), t3 = dist(narizBase, menton);
+    const mediaT = (t1+t2+t3)/3;
+    const cvT = Math.sqrt(((t1-mediaT)**2 + (t2-mediaT)**2 + (t3-mediaT)**2)/3) / mediaT;
+    const scoreTercios = escalaDesviacion(cvT, 0.28);
+
+    // --- Proporción ocular ---
+    const ojoR = dist(L(33), L(133)), ojoL = dist(L(362), L(263)), interocular = dist(L(133), L(362));
+    const anchoOjoMedio = (ojoR+ojoL)/2;
+    const ratioOjos = interocular / anchoOjoMedio;
+    const scoreOjos = escalaDesviacion(Math.abs(ratioOjos-1), 0.55);
+
+    // --- Proporción nariz/boca ---
+    const anchoNariz = dist(L(129), L(358)), anchoBoca = dist(L(61), L(291));
+    const ratioNB = anchoBoca / anchoNariz;
+    const scoreNarizBoca = escalaDesviacion(Math.abs(ratioNB-1.5)/1.5, 0.6);
+
+    // --- Zonas de piel ---
+    const anchoBase = anchoRostro;
+    const zFrente = statsZona(ctx, w, h, (L(109).x+L(338).x)/2, (frenteTop.y+ (L(105).y+L(334).y)/2)/2, anchoBase*0.42, altoRostro*0.14);
+    const zPeriOjoR = statsZona(ctx, w, h, L(33).x - anchoBase*0.02, L(33).y, anchoBase*0.10, altoRostro*0.09);
+    const zPeriOjoL = statsZona(ctx, w, h, L(263).x + anchoBase*0.02, L(263).y, anchoBase*0.10, altoRostro*0.09);
+    const zNasoR = statsZona(ctx, w, h, mid(L(129), L(61)).x, mid(L(129), L(61)).y, anchoBase*0.10, altoRostro*0.14);
+    const zNasoL = statsZona(ctx, w, h, mid(L(358), L(291)).x, mid(L(358), L(291)).y, anchoBase*0.10, altoRostro*0.14);
+    const zMejillaR = statsZona(ctx, w, h, L(50).x, L(50).y, anchoBase*0.16, altoRostro*0.14);
+    const zMejillaL = statsZona(ctx, w, h, L(280).x, L(280).y, anchoBase*0.16, altoRostro*0.14);
+    const zOjeraR = statsZona(ctx, w, h, L(145).x, L(145).y + altoRostro*0.035, anchoBase*0.11, altoRostro*0.05);
+    const zOjeraL = statsZona(ctx, w, h, L(374).x, L(374).y + altoRostro*0.035, anchoBase*0.11, altoRostro*0.05);
+
+    function media(campo, ...zonas){
+      const vs = zonas.filter(Boolean).map(z=>z[campo]);
+      return vs.length ? vs.reduce((a,b)=>a+b,0)/vs.length : 0;
+    }
+
+    const texFrente = zFrente ? zFrente.texVar : 0;
+    const texPeriorbital = media('texVar', zPeriOjoR, zPeriOjoL);
+    const texNasolabial = media('texVar', zNasoR, zNasoL);
+    const texMejillas = media('texVar', zMejillaR, zMejillaL);
+
+    const scoreArrugasFrente = escalaInversa(texFrente, 55);
+    const scoreArrugasPeriorbital = escalaInversa(texPeriorbital, 40);
+    const scoreArrugasNasolabial = escalaInversa(texNasolabial, 60);
+    const scoreTextura = escalaInversa(texMejillas, 45);
+
+    const pigStd = media('stdLum', zFrente, zMejillaR, zMejillaL);
+    const pigPct = media('pctOscuros', zFrente, zMejillaR, zMejillaL);
+    const indicePigmento = pigStd*0.6 + pigPct*100*0.7;
+    const scorePigmentacion = escalaInversa(indicePigmento, 26);
+
+    const rojoIdx = Math.max(0, media('meanR', zMejillaR, zMejillaL) - (media('meanG', zMejillaR, zMejillaL)+media('meanB', zMejillaR, zMejillaL))/2);
+    const scoreRojez = escalaInversa(rojoIdx, 14);
+
+    const lumMejilla = media('meanLum', zMejillaR, zMejillaL);
+    const lumOjera = media('meanLum', zOjeraR, zOjeraL);
+    const difOjeras = Math.max(0, lumMejilla - lumOjera);
+    const scoreOjeras = escalaInversa(difOjeras, 12);
+
+    const scoreGlobalPiel = Math.round((scoreArrugasFrente+scoreArrugasPeriorbital+scoreArrugasNasolabial+scoreTextura+scorePigmentacion+scoreRojez+scoreOjeras)/7);
+    const scoreGlobalEstructura = Math.round((scoreSimetria+scoreTercios+scoreOjos+scoreNarizBoca)/4);
+
+    return {
+      piel: [
+        {clave:'arrugasFrente', nombre:'Líneas de expresión — frente', score:Math.round(scoreArrugasFrente), nota:'Textura y micro-relieve en la zona frontal.'},
+        {clave:'arrugasPeriorbital', nombre:'Contorno de ojos', score:Math.round(scoreArrugasPeriorbital), nota:'Zona de patas de gallo y párpado inferior.'},
+        {clave:'arrugasNasolabial', nombre:'Surco nasogeniano', score:Math.round(scoreArrugasNasolabial), nota:'Relieve entre ala nasal y comisura labial.'},
+        {clave:'textura', nombre:'Textura y poro', score:Math.round(scoreTextura), nota:'Uniformidad de la superficie en mejillas.'},
+        {clave:'pigmentacion', nombre:'Pigmentación / manchas', score:Math.round(scorePigmentacion), nota:'Variabilidad de tono y zonas más oscuras localizadas.'},
+        {clave:'rojez', nombre:'Rojez / cuperosis aparente', score:Math.round(scoreRojez), nota:'Predominancia del canal rojo en mejillas.'},
+        {clave:'ojeras', nombre:'Ojeras', score:Math.round(scoreOjeras), nota:'Contraste de luminosidad bajo el ojo frente a la mejilla.'}
+      ],
+      estructura: [
+        {clave:'simetria', nombre:'Simetría facial', score:Math.round(scoreSimetria), nota:'Comparativa de posición de ojos, cejas, boca y mandíbula respecto al eje central.'},
+        {clave:'tercios', nombre:'Proporción de tercios', score:Math.round(scoreTercios), nota:'Equilibrio entre frente, tercio medio y tercio inferior.'},
+        {clave:'ojos', nombre:'Proporción ocular', score:Math.round(scoreOjos), nota:'Relación entre distancia interocular y anchura del ojo.'},
+        {clave:'narizBoca', nombre:'Proporción nariz / boca', score:Math.round(scoreNarizBoca), nota:'Relación clásica de anchura entre nariz y boca.'}
+      ],
+      scoreGlobalPiel, scoreGlobalEstructura
+    };
+  }
+
+  // ---------- Render del informe ----------
+  function colorPorScore(score){
+    if(score>=75) return getComputedStyle(document.documentElement).getPropertyValue('--verde').trim();
+    if(score>=50) return getComputedStyle(document.documentElement).getPropertyValue('--ambar').trim();
+    return getComputedStyle(document.documentElement).getPropertyValue('--rojo').trim();
+  }
+  function etiquetaPorScore(score){
+    if(score>=85) return 'Signos mínimos';
+    if(score>=65) return 'Signos leves';
+    if(score>=45) return 'Moderado';
+    return 'Marcado';
+  }
+  function sugerenciaPorClave(clave, score){
+    if(score>=65) return '';
+    const mapa = {
+      arrugasFrente:'Valorar protocolo de tensado/rejuvenecimiento facial (p. ej. HIFU facial).',
+      arrugasPeriorbital:'Valorar protocolo de tensado/rejuvenecimiento facial (p. ej. HIFU facial).',
+      arrugasNasolabial:'Valorar protocolo de tensado/rejuvenecimiento facial (p. ej. HIFU facial).',
+      textura:'Valorar renovación/exfoliación y cuidado de textura.',
+      pigmentacion:'Valorar protocolo despigmentante y protección solar.',
+      rojez:'Valorar rutina calmante; descartar causas no estéticas si es intensa.',
+      ojeras:'Informativo — valorar según hábitos de descanso de la clienta.'
+    };
+    return mapa[clave] || '';
+  }
+
+  function renderBloque(contenedorId, items){
+    const cont = document.getElementById(contenedorId);
+    cont.innerHTML='';
+    items.forEach(it=>{
+      const color = colorPorScore(it.score);
+      const sugerencia = sugerenciaPorClave(it.clave, it.score);
+      const div = document.createElement('div');
+      div.className='metrica';
+      div.innerHTML = `
+        <div class="metrica-top">
+          <span class="nombre">${it.nombre}</span>
+          <span class="etiqueta" style="color:${color}; border:1px solid ${color};">${etiquetaPorScore(it.score)}</span>
+        </div>
+        <div class="barra"><div class="barra-fill" style="width:${it.score}%; background:${color};"></div></div>
+        <div class="metrica-nota">${it.nota}${sugerencia ? '<br><em>'+sugerencia+'</em>' : ''}</div>
+        <div class="ajuste">
+          <label>Ajustar</label>
+          <input type="range" min="0" max="100" value="${it.score}" data-clave="${it.clave}" class="rangoAjuste">
+          <span class="valor">${it.score}</span>
+        </div>
+      `;
+      cont.appendChild(div);
+    });
+    cont.querySelectorAll('.rangoAjuste').forEach(inp=>{
+      inp.addEventListener('input', (e)=>{
+        const v = e.target.value;
+        e.target.nextElementSibling.textContent = v;
+        const metrica = e.target.closest('.metrica');
+        const color = colorPorScore(v);
+        metrica.querySelector('.barra-fill').style.width = v+'%';
+        metrica.querySelector('.barra-fill').style.background = color;
+        const etq = metrica.querySelector('.etiqueta');
+        etq.textContent = etiquetaPorScore(v);
+        etq.style.color = color; etq.style.borderColor = color;
+      });
+    });
+  }
+
+  function renderizarInforme(analisis){
+    document.getElementById('scoreGlobalPiel').textContent = analisis.scoreGlobalPiel;
+    document.getElementById('scoreGlobalEstructura').textContent = analisis.scoreGlobalEstructura;
+    renderBloque('grupoPiel', analisis.piel);
+    renderBloque('grupoEstructura', analisis.estructura);
+  }
+
+  btnImprimir.addEventListener('click', ()=>{
+    const nombre = document.getElementById('nombreClienta').value || 'Clienta';
+    const fecha = document.getElementById('fechaConsulta').value || '';
+    document.title = `Analisis facial - ${nombre} - ${fecha}`;
+    window.print();
+  });
+
+  // Inicio
+  iniciarCamara();
+})();
+</script>
+</body>
+</html>
