@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Consentiment Informat – Pellbellafranqueses</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --warm: #f2ede4;
+    --gold: #b8976a;
+    --gold-light: #d4b896;
+    --dark: #2a2118;
+    --mid: #5a4e3c;
+    --text: #3d3428;
+    --border: #ddd5c4;
+    --success: #6a9e7a;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--dark);
+    color: var(--cream);
+    padding: 22px 30px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+  .header-logo {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; color: var(--dark); font-weight: 600;
+  }
+  .header-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; letter-spacing: 0.04em;
+    color: var(--cream);
+  }
+  .header-name span { color: var(--gold-light); }
+  .header-info {
+    text-align: right; font-size: 11px; color: var(--gold-light);
+    line-height: 1.7; letter-spacing: 0.02em;
+  }
+
+  /* ── LANG TOGGLE ── */
+  .lang-bar {
+    background: var(--warm);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: center; gap: 0;
+    padding: 0;
+  }
+  .lang-btn {
+    padding: 10px 32px;
+    border: none; background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--mid); cursor: pointer;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .lang-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+    background: var(--cream);
+  }
+
+  /* ── TREATMENT SELECTOR ── */
+  .treatment-nav {
+    padding: 24px 20px 12px;
+    max-width: 800px; margin: 0 auto;
+  }
+  .treatment-nav h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300;
+    color: var(--dark); margin-bottom: 16px;
+    letter-spacing: 0.02em;
+  }
+  .treatment-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  @media(min-width:600px){
+    .treatment-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .treat-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .treat-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(184,151,106,0.15); }
+  .treat-card.active { border-color: var(--gold); background: #fdf9f3; box-shadow: 0 4px 20px rgba(184,151,106,0.2); }
+  .treat-card .icon { font-size: 26px; margin-bottom: 6px; }
+  .treat-card .name { font-size: 13px; font-weight: 500; color: var(--dark); line-height: 1.3; }
+  .treat-card.done::after {
+    content: '✓';
+    display: block;
+    font-size: 11px;
+    color: var(--success);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  /* ── CONSENT FORM ── */
+  .consent-area {
+    max-width: 800px; margin: 0 auto;
+    padding: 10px 20px 40px;
+  }
+  .consent-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: none;
+  }
+  .consent-card.visible { display: block; }
+
+  .consent-header {
+    background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 100%);
+    padding: 24px 28px;
+    color: var(--cream);
+  }
+  .consent-header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px; font-weight: 300;
+    letter-spacing: 0.03em; margin-bottom: 4px;
+  }
+  .consent-header p { font-size: 12px; color: var(--gold-light); letter-spacing: 0.05em; text-transform: uppercase; }
+
+  .consent-body { padding: 24px 28px; }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 600;
+    color: var(--dark); margin: 20px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.02em;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  .consent-body p, .consent-body li {
+    font-size: 14px; line-height: 1.75;
+    color: var(--text);
+  }
+  .consent-body ul { padding-left: 18px; margin-top: 6px; }
+  .consent-body li { margin-bottom: 4px; }
+
+  .info-box {
+    background: #f9f5ee;
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 13.5px;
+    color: var(--mid);
+    line-height: 1.7;
+  }
+
+  /* ── CLIENT DATA ── */
+  .client-data {
+    background: var(--warm);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .client-data h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px; color: var(--dark);
+    margin-bottom: 14px; font-weight: 600;
+  }
+  .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .form-group { flex: 1; min-width: 200px; }
+  .form-group label {
+    display: block; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--mid); margin-bottom: 5px; font-weight: 500;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--dark);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+
+  /* ── CHECKBOXES ── */
+  .checks-area { margin: 20px 0; display: flex; flex-direction: column; gap: 12px; }
+  .check-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: #fdfaf6;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .check-row:hover { border-color: var(--gold-light); }
+  .check-row input[type=checkbox] {
+    width: 20px; height: 20px; margin-top: 1px;
+    accent-color: var(--gold);
+    cursor: pointer; flex-shrink: 0;
+  }
+  .check-row label {
+    font-size: 13.5px; line-height: 1.6;
+    color: var(--text); cursor: pointer;
+  }
+  .check-row label strong { color: var(--dark); }
+
+  /* ── SIGNATURE ── */
+  .sig-area { margin: 20px 0; }
+  .sig-area h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px; color: var(--dark);
+    margin-bottom: 10px; font-weight: 600;
+  }
+  .sig-label { font-size: 12px; color: var(--mid); margin-bottom: 8px; }
+  .canvas-wrap {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    background: #fdfdfd;
+    position: relative;
+    overflow: hidden;
+  }
+  .canvas-wrap canvas {
+    display: block;
+    width: 100%;
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .canvas-hint {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 13px; color: #c5b99f;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    text-align: center;
+    line-height: 1.6;
+  }
+  .canvas-hint .hint-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+  .sig-actions {
+    display: flex; gap: 10px; margin-top: 10px; align-items: center;
+  }
+  .btn-clear {
+    padding: 8px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; color: var(--mid);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-clear:hover { border-color: var(--gold); color: var(--gold); }
+  .sig-date { font-size: 12px; color: var(--mid); margin-left: auto; }
+
+  /* ── SUBMIT ── */
+  .submit-area { margin-top: 24px; text-align: center; }
+  .btn-submit {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 40px;
+    background: var(--dark);
+    color: var(--cream);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(42,33,24,0.25);
+  }
+  .btn-submit:hover { background: var(--gold); color: var(--dark); transform: translateY(-2px); }
+  .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ── SUCCESS STATE ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 30px;
+  }
+  .success-screen.visible { display: block; }
+  .success-icon { font-size: 60px; margin-bottom: 16px; }
+  .success-screen h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px; font-weight: 300;
+    color: var(--dark); margin-bottom: 10px;
+  }
+  .success-screen p { color: var(--mid); font-size: 15px; margin-bottom: 24px; }
+  .btn-new {
+    padding: 12px 28px;
+    background: var(--gold);
+    color: var(--dark);
+    border: none; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-new:hover { background: var(--dark); color: var(--cream); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    margin: 0 0 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+
+  /* ── SYNC BANNER ── */
+  .sync-banner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: var(--warm);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    font-size: 12.5px;
+    color: var(--mid);
+    text-align: center;
+    flex-wrap: wrap;
+  }
+  .sync-banner.visible { display: flex; }
+  .sync-banner .btn-sync {
+    padding: 6px 16px;
+    border: 1.5px solid var(--gold);
+    border-radius: 20px;
+    background: white;
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sync-banner .btn-sync:hover { background: var(--gold); color: white; }
+  .sync-banner .btn-sync:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">P</div>
+    <div>
+      <div class="header-name">Pell<span>bella</span>franqueses</div>
+    </div>
+  </div>
+  <div class="header-info">
+    Plaça de l'Espolsada, Local 7<br>
+    pellbellafranqueses@gmail.com<br>
+    NIF: 52149388Q
+  </div>
+</div>
+
+<!-- LANGUAGE BAR -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('es')" id="btn-es">Castellano</button>
+  <button class="lang-btn" onclick="setLang('ca')" id="btn-ca">Català</button>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+<div class="sync-banner" id="syncBanner">
+  <span id="syncBannerText"></span>
+  <button class="btn-sync" id="syncBannerBtn" onclick="manualDriveSync()">Subir a Drive ahora</button>
+</div>
+
+<!-- TREATMENT SELECTOR -->
+<div class="treatment-nav">
+  <h2 id="nav-title">Selecciona el tratamiento</h2>
+  <div class="treatment-grid" id="treatmentGrid">
+    <div class="treat-card" onclick="selectTreat(0)" id="tc0">
+      <div class="icon">❄️</div>
+      <div class="name">Criolipólisis</div>
+    </div>
+    <div class="treat-card" onclick="selectTreat(1)" id="tc1">
+      <div class="icon">✨</div>
+      <div class="name">Depilación Láser de Diodo</div>
+    </div>
+    <div class="treat-card" onclick="selectTreat(2)" id="tc2">
+      <div class="icon">🔊</div>
+      <div class="name">Cavitación</div>
+    </div>
+    <div class="treat-card" onclick="selectTreat(3)" id="tc3">
+      <div class="icon">🌡️</div>
+      <div class="name">Radiofrecuencia</div>
+    </div>
+    <div class="treat-card" onclick="selectTreat(4)" id="tc4">
+      <div class="icon">💨</div>
+      <div class="name">Vacumterapia</div>
+    </div>
+    <div class="treat-card" onclick="selectTreat(5)" id="tc5">
+      <div class="icon">💪</div>
+      <div class="name">Body Sculp</div>
+    </div>
+    <div class="treat-card" onclick="selectTreat(6)" id="tc6">
+      <div class="icon">🎯</div>
+      <div class="name">HIFU</div>
+    </div>
+    <div class="treat-card" onclick="selectTreat(7)" id="tc7">
+      <div class="icon">🔥</div>
+      <div class="name">Liposonic</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONSENT CARDS -->
+<div class="consent-area">
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✅</div>
+    <h3 id="successTitle">¡Consentimiento registrado!</h3>
+    <p id="successText">El documento ha sido firmado y guardado en Google Drive.</p>
+    <button class="btn-new" onclick="resetForm()" id="btnNew">Nuevo consentimiento</button>
+  </div>
+
+  <!-- 0: CRIOLIPÓLISIS -->
+  <div class="consent-card" id="form0">
+    <div class="consent-header">
+      <h3 id="h0-title">Criolipólisis</h3>
+      <p id="h0-sub">Consentimiento Informado</p>
+    </div>
+    <div class="consent-body">
+      <div class="section-title" id="s0-what">¿En qué consiste?</div>
+      <p id="s0-what-txt">La criolipólisis es una técnica no invasiva que aplica frío controlado sobre zonas localizadas para reducir la grasa subcutánea de forma progresiva y natural. No requiere anestesia ni tiempo de recuperación.</p>
+
+      <div class="section-title" id="s0-effects">Efectos secundarios habituales</div>
+      <p id="s0-effects-pre">Son temporales y leves en la mayoría de casos:</p>
+      <ul id="s0-effects-list">
+        <li>Enrojecimiento, sensación de frío o entumecimiento en la zona tratada (desaparece en horas).</li>
+        <li>Ligeros moratones o sensibilidad al tacto durante unos días.</li>
+        <li>Sensación de tensión o hinchazón moderada que remite en 1–2 semanas.</li>
+      </ul>
+
+      <div class="section-title" id="s0-contra">¿Cuándo no es recomendable?</div>
+      <div class="info-box" id="s0-contra-box">
+        Informe a la especialista si presenta alguna de estas condiciones: embarazo o lactancia, alteraciones de la sensibilidad al frío (como crioglobulinemia o urticaria por frío), heridas abiertas o piel irritada en la zona, portadora de marcapasos u otros dispositivos electrónicos implantados, o si ha sido diagnosticada recientemente de cáncer.
+      </div>
+
+      <div id="client-data-0">
+        <div class="client-data">
+          <h4 id="cd0-title">Datos del cliente / clienta</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label id="lbl0-name">Nombre completo</label>
+              <input type="text" id="inp0-name" placeholder="Nombre y apellidos">
+            </div>
+            <div class="form-group">
+              <label id="lbl0-dni">DNI / NIE / Pasaporte</label>
+              <input type="text" id="inp0-dni" placeholder="12345678A">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label id="lbl0-date">Fecha</label>
+              <input type="date" id="inp0-date">
+            </div>
+            <div class="form-group">
+              <label id="lbl0-phone">Teléfono</label>
+              <input type="tel" id="inp0-phone" placeholder="600 000 000">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checks-area">
+        <div class="check-row">
+          <input type="checkbox" id="chk0-info">
+          <label for="chk0-info" id="lbl0-info"><strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="chk0-gdpr">
+          <label for="chk0-gdpr" id="lbl0-gdpr"><strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.</label>
+        </div>
+      </div>
+
+      <div class="sig-area">
+        <h4 id="sig0-title">Firma del / de la cliente</h4>
+        <div class="sig-label" id="sig0-label">Firme en el recuadro con el dedo o el lápiz táctil</div>
+        <div class="canvas-wrap">
+          <canvas id="canvas0" height="180"></canvas>
+          <div class="canvas-hint" id="hint0">
+            <span class="hint-icon">✍️</span>
+            Firme aquí
+          </div>
+        </div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas(0)" id="btn0-clear">Borrar firma</button>
+          <span class="sig-date" id="date0"></span>
+        </div>
+      </div>
+
+      <div class="submit-area">
+        <button class="btn-submit" id="submit0" onclick="submitForm(0)" disabled>
+          <span>✓</span> <span id="submit0-txt">Confirmar y firmar consentimiento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1: DEPILACIÓN LÁSER -->
+  <div class="consent-card" id="form1">
+    <div class="consent-header">
+      <h3 id="h1-title">Depilación Láser de Diodo</h3>
+      <p id="h1-sub">Consentimiento Informado</p>
+    </div>
+    <div class="consent-body">
+      <div class="section-title" id="s1-what">¿En qué consiste?</div>
+      <p id="s1-what-txt">La depilación láser de diodo actúa sobre el pigmento del vello para reducirlo de forma progresiva y duradera. Es una de las tecnologías más seguras y eficaces disponibles, con resultados visibles desde las primeras sesiones.</p>
+
+      <div class="section-title" id="s1-effects">Efectos secundarios habituales</div>
+      <ul id="s1-effects-list">
+        <li>Enrojecimiento y ligera sensación de calor en la zona tratada (desaparece en pocas horas).</li>
+        <li>Raramente, pequeñas ampollas o costras superficiales que cicatrizan solas en días.</li>
+        <li>Cambios temporales en la pigmentación de la piel, más frecuentes en pieles muy morenas.</li>
+      </ul>
+
+      <div class="section-title" id="s1-contra">¿Cuándo no es recomendable?</div>
+      <div class="info-box" id="s1-contra-box">
+        Comuníquelo a la especialista si está embarazada o en periodo de lactancia, si ha tomado el sol intenso o usado cabinas de bronceado en las últimas 4 semanas, si toma medicación fotosensibilizante (algunos antibióticos, antiinflamatorios o isotretinoína), si padece vitíligo, lupus u otras enfermedades autoinmunes cutáneas, o si tiene tatuajes o maquillaje permanente en la zona a tratar.
+      </div>
+
+      <div class="client-data">
+        <h4 id="cd1-title">Datos del cliente / clienta</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label id="lbl1-name">Nombre completo</label>
+            <input type="text" id="inp1-name" placeholder="Nombre y apellidos">
+          </div>
+          <div class="form-group">
+            <label id="lbl1-dni">DNI / NIE / Pasaporte</label>
+            <input type="text" id="inp1-dni" placeholder="12345678A">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label id="lbl1-date">Fecha</label>
+            <input type="date" id="inp1-date">
+          </div>
+          <div class="form-group">
+            <label id="lbl1-phone">Teléfono</label>
+            <input type="tel" id="inp1-phone" placeholder="600 000 000">
+          </div>
+        </div>
+      </div>
+
+      <div class="checks-area">
+        <div class="check-row">
+          <input type="checkbox" id="chk1-info">
+          <label for="chk1-info" id="lbl1-info"><strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="chk1-gdpr">
+          <label for="chk1-gdpr" id="lbl1-gdpr"><strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.</label>
+        </div>
+      </div>
+
+      <div class="sig-area">
+        <h4 id="sig1-title">Firma del / de la cliente</h4>
+        <div class="sig-label" id="sig1-label">Firme en el recuadro con el dedo o el lápiz táctil</div>
+        <div class="canvas-wrap">
+          <canvas id="canvas1" height="180"></canvas>
+          <div class="canvas-hint" id="hint1"><span class="hint-icon">✍️</span>Firme aquí</div>
+        </div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas(1)" id="btn1-clear">Borrar firma</button>
+          <span class="sig-date" id="date1"></span>
+        </div>
+      </div>
+      <div class="submit-area">
+        <button class="btn-submit" id="submit1" onclick="submitForm(1)" disabled>
+          <span>✓</span> <span id="submit1-txt">Confirmar y firmar consentimiento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2: CAVITACIÓN -->
+  <div class="consent-card" id="form2">
+    <div class="consent-header">
+      <h3 id="h2-title">Cavitación</h3>
+      <p id="h2-sub">Consentimiento Informado</p>
+    </div>
+    <div class="consent-body">
+      <div class="section-title" id="s2-what">¿En qué consiste?</div>
+      <p id="s2-what-txt">La cavitación utiliza ultrasonidos de baja frecuencia para romper de forma selectiva las células de grasa localizada, que el cuerpo elimina de manera natural. Es un tratamiento indoloro y no invasivo para modelar silueta.</p>
+
+      <div class="section-title" id="s2-effects">Efectos secundarios habituales</div>
+      <ul id="s2-effects-list">
+        <li>Leve enrojecimiento o calor local que desaparece en pocas horas.</li>
+        <li>Sensación de zumbido suave durante la sesión, completamente normal.</li>
+        <li>En casos puntuales, pequeña inflamación o sensibilidad táctil pasajera.</li>
+      </ul>
+
+      <div class="section-title" id="s2-contra">¿Cuándo no es recomendable?</div>
+      <div class="info-box" id="s2-contra-box">
+        Indíquelo a la especialista si está embarazada o en periodo de lactancia, si padece enfermedades hepáticas o renales (ya que el hígado y los riñones participan en la eliminación de la grasa), si tiene marcapasos u otros implantes electrónicos, si presenta hernias en la zona a tratar, o si está en tratamiento oncológico activo.
+      </div>
+
+      <div class="client-data">
+        <h4 id="cd2-title">Datos del cliente / clienta</h4>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl2-name">Nombre completo</label><input type="text" id="inp2-name" placeholder="Nombre y apellidos"></div>
+          <div class="form-group"><label id="lbl2-dni">DNI / NIE / Pasaporte</label><input type="text" id="inp2-dni" placeholder="12345678A"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl2-date">Fecha</label><input type="date" id="inp2-date"></div>
+          <div class="form-group"><label id="lbl2-phone">Teléfono</label><input type="tel" id="inp2-phone" placeholder="600 000 000"></div>
+        </div>
+      </div>
+
+      <div class="checks-area">
+        <div class="check-row"><input type="checkbox" id="chk2-info"><label for="chk2-info" id="lbl2-info"><strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.</label></div>
+        <div class="check-row"><input type="checkbox" id="chk2-gdpr"><label for="chk2-gdpr" id="lbl2-gdpr"><strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.</label></div>
+      </div>
+
+      <div class="sig-area">
+        <h4 id="sig2-title">Firma del / de la cliente</h4>
+        <div class="sig-label" id="sig2-label">Firme en el recuadro con el dedo o el lápiz táctil</div>
+        <div class="canvas-wrap"><canvas id="canvas2" height="180"></canvas><div class="canvas-hint" id="hint2"><span class="hint-icon">✍️</span>Firme aquí</div></div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas(2)" id="btn2-clear">Borrar firma</button>
+          <span class="sig-date" id="date2"></span>
+        </div>
+      </div>
+      <div class="submit-area">
+        <button class="btn-submit" id="submit2" onclick="submitForm(2)" disabled>
+          <span>✓</span> <span id="submit2-txt">Confirmar y firmar consentimiento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3: RADIOFRECUENCIA -->
+  <div class="consent-card" id="form3">
+    <div class="consent-header">
+      <h3 id="h3-title">Radiofrecuencia</h3>
+      <p id="h3-sub">Consentimiento Informado</p>
+    </div>
+    <div class="consent-body">
+      <div class="section-title" id="s3-what">¿En qué consiste?</div>
+      <p id="s3-what-txt">La radiofrecuencia genera calor en las capas profundas de la piel para estimular la producción de colágeno y mejorar la firmeza y la elasticidad cutánea. Es un tratamiento reafirmante y antiedad muy bien tolerado.</p>
+
+      <div class="section-title" id="s3-effects">Efectos secundarios habituales</div>
+      <ul id="s3-effects-list">
+        <li>Enrojecimiento y sensación de calor en la zona tratada, que remiten en horas.</li>
+        <li>Ligera inflamación o sensibilidad al tacto durante 24–48 horas.</li>
+        <li>En casos muy puntuales, pequeñas costras superficiales si la piel es especialmente sensible.</li>
+      </ul>
+
+      <div class="section-title" id="s3-contra">¿Cuándo no es recomendable?</div>
+      <div class="info-box" id="s3-contra-box">
+        Comuníquelo a la especialista si está embarazada, si porta marcapasos, desfibrilador u otros implantes metálicos en la zona a tratar, si padece epilepsia, si tiene la piel especialmente sensible o enfermedades cutáneas activas en la zona, o si está en tratamiento oncológico activo.
+      </div>
+
+      <div class="client-data">
+        <h4 id="cd3-title">Datos del cliente / clienta</h4>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl3-name">Nombre completo</label><input type="text" id="inp3-name" placeholder="Nombre y apellidos"></div>
+          <div class="form-group"><label id="lbl3-dni">DNI / NIE / Pasaporte</label><input type="text" id="inp3-dni" placeholder="12345678A"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl3-date">Fecha</label><input type="date" id="inp3-date"></div>
+          <div class="form-group"><label id="lbl3-phone">Teléfono</label><input type="tel" id="inp3-phone" placeholder="600 000 000"></div>
+        </div>
+      </div>
+
+      <div class="checks-area">
+        <div class="check-row"><input type="checkbox" id="chk3-info"><label for="chk3-info" id="lbl3-info"><strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.</label></div>
+        <div class="check-row"><input type="checkbox" id="chk3-gdpr"><label for="chk3-gdpr" id="lbl3-gdpr"><strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.</label></div>
+      </div>
+
+      <div class="sig-area">
+        <h4 id="sig3-title">Firma del / de la cliente</h4>
+        <div class="sig-label" id="sig3-label">Firme en el recuadro con el dedo o el lápiz táctil</div>
+        <div class="canvas-wrap"><canvas id="canvas3" height="180"></canvas><div class="canvas-hint" id="hint3"><span class="hint-icon">✍️</span>Firme aquí</div></div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas(3)" id="btn3-clear">Borrar firma</button>
+          <span class="sig-date" id="date3"></span>
+        </div>
+      </div>
+      <div class="submit-area">
+        <button class="btn-submit" id="submit3" onclick="submitForm(3)" disabled>
+          <span>✓</span> <span id="submit3-txt">Confirmar y firmar consentimiento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4: VACUMTERAPIA -->
+  <div class="consent-card" id="form4">
+    <div class="consent-header">
+      <h3 id="h4-title">Vacumterapia</h3>
+      <p id="h4-sub">Consentimiento Informado</p>
+    </div>
+    <div class="consent-body">
+      <div class="section-title" id="s4-what">¿En qué consiste?</div>
+      <p id="s4-what-txt">La vacumterapia aplica succión controlada sobre la piel para activar la circulación, mejorar el drenaje linfático y trabajar la celulitis y la flacidez de forma natural y no invasiva. Es relajante y muy bien tolerada.</p>
+
+      <div class="section-title" id="s4-effects">Efectos secundarios habituales</div>
+      <ul id="s4-effects-list">
+        <li>Enrojecimiento temporal de la zona tratada que desaparece en pocas horas.</li>
+        <li>Moratones suaves (hematomas) en pieles más sensibles, que se resuelven solos en días.</li>
+        <li>Sensación de calor o ligera sensibilidad al tacto pasajera.</li>
+      </ul>
+
+      <div class="section-title" id="s4-contra">¿Cuándo no es recomendable?</div>
+      <div class="info-box" id="s4-contra-box">
+        Informe a la especialista si está embarazada o en periodo de lactancia, si tiene varices importantes, fragilidad capilar o trastornos de coagulación, si presenta heridas, irritaciones o infecciones cutáneas en la zona a tratar, si padece trombosis venosa profunda o ha tenido flebitis recientemente, o si está en tratamiento oncológico activo.
+      </div>
+
+      <div class="client-data">
+        <h4 id="cd4-title">Datos del cliente / clienta</h4>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl4-name">Nombre completo</label><input type="text" id="inp4-name" placeholder="Nombre y apellidos"></div>
+          <div class="form-group"><label id="lbl4-dni">DNI / NIE / Pasaporte</label><input type="text" id="inp4-dni" placeholder="12345678A"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl4-date">Fecha</label><input type="date" id="inp4-date"></div>
+          <div class="form-group"><label id="lbl4-phone">Teléfono</label><input type="tel" id="inp4-phone" placeholder="600 000 000"></div>
+        </div>
+      </div>
+
+      <div class="checks-area">
+        <div class="check-row"><input type="checkbox" id="chk4-info"><label for="chk4-info" id="lbl4-info"><strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.</label></div>
+        <div class="check-row"><input type="checkbox" id="chk4-gdpr"><label for="chk4-gdpr" id="lbl4-gdpr"><strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglament (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.</label></div>
+      </div>
+
+      <div class="sig-area">
+        <h4 id="sig4-title">Firma del / de la cliente</h4>
+        <div class="sig-label" id="sig4-label">Firme en el recuadro con el dedo o el lápiz táctil</div>
+        <div class="canvas-wrap"><canvas id="canvas4" height="180"></canvas><div class="canvas-hint" id="hint4"><span class="hint-icon">✍️</span>Firme aquí</div></div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas(4)" id="btn4-clear">Borrar firma</button>
+          <span class="sig-date" id="date4"></span>
+        </div>
+      </div>
+      <div class="submit-area">
+        <button class="btn-submit" id="submit4" onclick="submitForm(4)" disabled>
+          <span>✓</span> <span id="submit4-txt">Confirmar y firmar consentimiento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5: BODY SCULP -->
+  <div class="consent-card" id="form5">
+    <div class="consent-header">
+      <h3 id="h5-title">Body Sculp</h3>
+      <p id="h5-sub">Consentimiento Informado</p>
+    </div>
+    <div class="consent-body">
+      <div class="section-title" id="s5-what">¿En qué consiste?</div>
+      <p id="s5-what-txt">Body Sculp combina tecnologías de última generación para modelar, tonificar y esculpir la silueta de forma no invasiva, estimulando la musculatura y reduciendo la grasa localizada de manera complementaria.</p>
+
+      <div class="section-title" id="s5-effects">Efectos secundarios habituales</div>
+      <ul id="s5-effects-list">
+        <li>Sensación de cansancio muscular similar al que se experimenta tras el ejercicio físico (normal y pasajero).</li>
+        <li>Leve enrojecimiento o calor local en la zona tratada.</li>
+        <li>Raramente, ligeros espasmos musculares durante la sesión, sin importancia clínica.</li>
+      </ul>
+
+      <div class="section-title" id="s5-contra">¿Cuándo no es recomendable?</div>
+      <div class="info-box" id="s5-contra-box">
+        Comuníquelo a la especialista si está embarazada, si porta marcapasos, desfibrilador u otros implantes electrónicos o metálicos, si padece epilepsia, si ha tenido cirugías recientes en la zona a tratar, si presenta hernias abdominales, o si está en tratamiento oncológico activo.
+      </div>
+
+      <div class="client-data">
+        <h4 id="cd5-title">Datos del cliente / clienta</h4>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl5-name">Nombre completo</label><input type="text" id="inp5-name" placeholder="Nombre y apellidos"></div>
+          <div class="form-group"><label id="lbl5-dni">DNI / NIE / Pasaporte</label><input type="text" id="inp5-dni" placeholder="12345678A"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl5-date">Fecha</label><input type="date" id="inp5-date"></div>
+          <div class="form-group"><label id="lbl5-phone">Teléfono</label><input type="tel" id="inp5-phone" placeholder="600 000 000"></div>
+        </div>
+      </div>
+
+      <div class="checks-area">
+        <div class="check-row"><input type="checkbox" id="chk5-info"><label for="chk5-info" id="lbl5-info"><strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.</label></div>
+        <div class="check-row"><input type="checkbox" id="chk5-gdpr"><label for="chk5-gdpr" id="lbl5-gdpr"><strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.</label></div>
+      </div>
+
+      <div class="sig-area">
+        <h4 id="sig5-title">Firma del / de la cliente</h4>
+        <div class="sig-label" id="sig5-label">Firme en el recuadro con el dedo o el lápiz táctil</div>
+        <div class="canvas-wrap"><canvas id="canvas5" height="180"></canvas><div class="canvas-hint" id="hint5"><span class="hint-icon">✍️</span>Firme aquí</div></div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas(5)" id="btn5-clear">Borrar firma</button>
+          <span class="sig-date" id="date5"></span>
+        </div>
+      </div>
+      <div class="submit-area">
+        <button class="btn-submit" id="submit5" onclick="submitForm(5)" disabled>
+          <span>✓</span> <span id="submit5-txt">Confirmar y firmar consentimiento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+<!-- 6: HIFU -->
+  <div class="consent-card" id="form6">
+    <div class="consent-header">
+      <h3 id="h6-title">HIFU</h3>
+      <p id="h6-sub">Consentimiento Informado</p>
+    </div>
+    <div class="consent-body">
+      <div class="section-title" id="s6-what">¿En qué consiste?</div>
+      <p id="s6-what-txt">El HIFU (Ultrasonido Focalizado de Alta Intensidad) emite energía focalizada en profundidad para estimular la producción de colágeno y tensar la piel de forma no invasiva, logrando un efecto lifting progresivo sin cirugía ni tiempo de recuperación.</p>
+
+      <div class="section-title" id="s6-effects">Efectos secundarios habituales</div>
+      <ul id="s6-effects-list"><li>Enrojecimiento y sensación de calor en la zona tratada durante las horas posteriores.</li><li>Leve hinchazón o sensibilidad al tacto que remite en 24–48 horas.</li><li>Hormigueo o sensación de pinchazos pasajera durante y después de la sesión.</li></ul>
+
+      <div class="section-title" id="s6-contra">¿Cuándo no es recomendable?</div>
+      <div class="info-box" id="s6-contra-box">
+                Informe a la especialista si está embarazada o en periodo de lactancia, si tiene heridas abiertas, infecciones activas o acné inflamatorio severo en la zona a tratar, si porta marcapasos, desfibrilador u otros implantes electrónicos o metálicos, si padece enfermedades cutáneas graves o trastornos de la coagulación, o si está en tratamiento oncológico activo.
+      </div>
+
+      <div class="client-data">
+        <h4 id="cd6-title">Datos del cliente / clienta</h4>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl6-name">Nombre completo</label><input type="text" id="inp6-name" placeholder="Nombre y apellidos"></div>
+          <div class="form-group"><label id="lbl6-dni">DNI / NIE / Pasaporte</label><input type="text" id="inp6-dni" placeholder="12345678A"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl6-date">Fecha</label><input type="date" id="inp6-date"></div>
+          <div class="form-group"><label id="lbl6-phone">Teléfono</label><input type="tel" id="inp6-phone" placeholder="600 000 000"></div>
+        </div>
+      </div>
+
+      <div class="checks-area">
+        <div class="check-row"><input type="checkbox" id="chk6-info"><label for="chk6-info" id="lbl6-info"><strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.</label></div>
+        <div class="check-row"><input type="checkbox" id="chk6-gdpr"><label for="chk6-gdpr" id="lbl6-gdpr"><strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.</label></div>
+      </div>
+
+      <div class="sig-area">
+        <h4 id="sig6-title">Firma del / de la cliente</h4>
+        <div class="sig-label" id="sig6-label">Firme en el recuadro con el dedo o el lápiz táctil</div>
+        <div class="canvas-wrap"><canvas id="canvas6" height="180"></canvas><div class="canvas-hint" id="hint6"><span class="hint-icon">✍️</span>Firme aquí</div></div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas(6)" id="btn6-clear">Borrar firma</button>
+          <span class="sig-date" id="date6"></span>
+        </div>
+      </div>
+      <div class="submit-area">
+        <button class="btn-submit" id="submit6" onclick="submitForm(6)" disabled>
+          <span>✓</span> <span id="submit6-txt">Confirmar y firmar consentimiento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+<!-- 7: LIPOSONIC -->
+  <div class="consent-card" id="form7">
+    <div class="consent-header">
+      <h3 id="h7-title">Liposonic</h3>
+      <p id="h7-sub">Consentimiento Informado</p>
+    </div>
+    <div class="consent-body">
+      <div class="section-title" id="s7-what">¿En qué consiste?</div>
+      <p id="s7-what-txt">Liposonic (Liposonix) utiliza ultrasonido focalizado de alta intensidad para destruir de forma selectiva las células de grasa localizada en una sola sesión por zona, sin cirugía ni anestesia. El cuerpo elimina la grasa tratada de forma natural en las semanas siguientes.</p>
+
+      <div class="section-title" id="s7-effects">Efectos secundarios habituales</div>
+      <ul id="s7-effects-list"><li>Enrojecimiento y sensación de calor en la zona tratada durante el día del tratamiento.</li><li>Hinchazón, sensibilidad al tacto o pequeños hematomas que remiten en 1–2 semanas.</li><li>Sensación de hormigueo o entumecimiento temporal en la zona tratada.</li></ul>
+
+      <div class="section-title" id="s7-contra">¿Cuándo no es recomendable?</div>
+      <div class="info-box" id="s7-contra-box">
+                Informe a la especialista si está embarazada o en periodo de lactancia, si padece hernias abdominales o enfermedades hepáticas o renales, si tiene heridas abiertas o infecciones cutáneas en la zona a tratar, si porta marcapasos u otros implantes electrónicos, si presenta trastornos de la coagulación, o si está en tratamiento oncológico activo.
+      </div>
+
+      <div class="client-data">
+        <h4 id="cd7-title">Datos del cliente / clienta</h4>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl7-name">Nombre completo</label><input type="text" id="inp7-name" placeholder="Nombre y apellidos"></div>
+          <div class="form-group"><label id="lbl7-dni">DNI / NIE / Pasaporte</label><input type="text" id="inp7-dni" placeholder="12345678A"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label id="lbl7-date">Fecha</label><input type="date" id="inp7-date"></div>
+          <div class="form-group"><label id="lbl7-phone">Teléfono</label><input type="tel" id="inp7-phone" placeholder="600 000 000"></div>
+        </div>
+      </div>
+
+      <div class="checks-area">
+        <div class="check-row"><input type="checkbox" id="chk7-info"><label for="chk7-info" id="lbl7-info"><strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.</label></div>
+        <div class="check-row"><input type="checkbox" id="chk7-gdpr"><label for="chk7-gdpr" id="lbl7-gdpr"><strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.</label></div>
+      </div>
+
+      <div class="sig-area">
+        <h4 id="sig7-title">Firma del / de la cliente</h4>
+        <div class="sig-label" id="sig7-label">Firme en el recuadro con el dedo o el lápiz táctil</div>
+        <div class="canvas-wrap"><canvas id="canvas7" height="180"></canvas><div class="canvas-hint" id="hint7"><span class="hint-icon">✍️</span>Firme aquí</div></div>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas(7)" id="btn7-clear">Borrar firma</button>
+          <span class="sig-date" id="date7"></span>
+        </div>
+      </div>
+      <div class="submit-area">
+        <button class="btn-submit" id="submit7" onclick="submitForm(7)" disabled>
+          <span>✓</span> <span id="submit7-txt">Confirmar y firmar consentimiento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+</div><!-- /consent-area -->
+
+<script>
+// ── TRANSLATIONS ──
+const T = {
+  es: {
+    navTitle: "Selecciona el tratamiento",
+    treatments: ["Criolipólisis","Depilación Láser de Diodo","Cavitación","Radiofrecuencia","Vacumterapia","Body Sculp","HIFU","Liposonic"],
+    infoSub: ["Consentimiento Informado","Consentimiento Informado","Consentimiento Informado","Consentimiento Informado","Consentimiento Informado","Consentimiento Informado","Consentimiento Informado","Consentimiento Informado"],
+    sectionWhat: "¿En qué consiste?",
+    sectionEffects: "Efectos secundarios habituales",
+    sectionContra: "¿Cuándo no es recomendable?",
+    cdTitle: "Datos del cliente / clienta",
+    lblName: "Nombre completo", lblDni: "DNI / NIE / Pasaporte",
+    lblDate: "Fecha", lblPhone: "Teléfono",
+    chkInfo: "<strong>Declaro</strong> haber leído y comprendido la información sobre este tratamiento y haber podido resolver mis dudas con la especialista antes de firmar.",
+    chkGdpr: "<strong>Autorizo</strong> a Pellbellafranqueses (NIF 52149388Q) a tratar mis datos personales con la finalidad exclusiva de gestionar mi historial de tratamientos estéticos, conforme al Reglamento (UE) 2016/679 (RGPD). Puedo ejercer mis derechos escribiendo a pellbellafranqueses@gmail.com.",
+    sigTitle: "Firma del / de la cliente",
+    sigLabel: "Firme en el recuadro con el dedo o el lápiz táctil",
+    sigHint: "Firme aquí",
+    btnClear: "Borrar firma",
+    btnSubmit: "Confirmar y firmar consentimiento",
+    successTitle: "¡Consentimiento registrado!",
+    successText: "El documento ha sido firmado y aceptado correctamente.",
+    btnNew: "Nuevo consentimiento"
+  },
+  ca: {
+    navTitle: "Selecciona el tractament",
+    treatments: ["Criolipòlisi","Depilació Làser de Díode","Cavitació","Radiofreqüència","Vacumteràpia","Body Sculp","HIFU","Liposonic"],
+    infoSub: ["Consentiment Informat","Consentiment Informat","Consentiment Informat","Consentiment Informat","Consentiment Informat","Consentiment Informat","Consentiment Informat","Consentiment Informat"],
+    sectionWhat: "En què consisteix?",
+    sectionEffects: "Efectes secundaris habituals",
+    sectionContra: "Quan no és recomanable?",
+    cdTitle: "Dades del client / clienta",
+    lblName: "Nom complet", lblDni: "DNI / NIE / Passaport",
+    lblDate: "Data", lblPhone: "Telèfon",
+    chkInfo: "<strong>Declaro</strong> haver llegit i comprès la informació sobre aquest tractament i haver pogut resoldre els meus dubtes amb l'especialista abans de signar.",
+    chkGdpr: "<strong>Autoritzo</strong> Pellbellafranqueses (NIF 52149388Q) a tractar les meves dades personals amb la finalitat exclusiva de gestionar el meu historial de tractaments estètics, d'acord amb el Reglament (UE) 2016/679 (RGPD). Puc exercir els meus drets escrivint a pellbellafranqueses@gmail.com.",
+    sigTitle: "Signatura del / de la client",
+    sigLabel: "Signi al requadre amb el dit o el llapis tàctil",
+    sigHint: "Signi aquí",
+    btnClear: "Esborrar signatura",
+    btnSubmit: "Confirmar i signar el consentiment",
+    successTitle: "Consentiment registrat!",
+    successText: "El document ha estat signat i acceptat correctament.",
+    btnNew: "Nou consentiment"
+  }
+};
+
+const CONTENT = {
+  es: {
+    whatTxt: [
+      "La criolipólisis es una técnica no invasiva que aplica frío controlado sobre zonas localizadas para reducir la grasa subcutánea de forma progresiva y natural. No requiere anestesia ni tiempo de recuperación.",
+      "La depilación láser de diodo actúa sobre el pigmento del vello para reducirlo de forma progresiva y duradera. Es una de las tecnologías más seguras y eficaces disponibles, con resultados visibles desde las primeras sesiones.",
+      "La cavitación utiliza ultrasonidos de baja frecuencia para romper de forma selectiva las células de grasa localizada, que el cuerpo elimina de manera natural. Es un tratamiento indoloro y no invasivo para modelar silueta.",
+      "La radiofrecuencia genera calor en las capas profundas de la piel para estimular la producción de colágeno y mejorar la firmeza y la elasticidad cutánea. Es un tratamiento reafirmante y antiedad muy bien tolerado.",
+      "La vacumterapia aplica succión controlada sobre la piel para activar la circulación, mejorar el drenaje linfático y trabajar la celulitis y la flacidez de forma natural y no invasiva. Es relajante y muy bien tolerada.",
+      "Body Sculp combina tecnologías de última generación para modelar, tonificar y esculpir la silueta de forma no invasiva, estimulando la musculatura y reduciendo la grasa localizada de manera complementaria.",
+      "El HIFU (Ultrasonido Focalizado de Alta Intensidad) emite energía focalizada en profundidad para estimular la producción de colágeno y tensar la piel de forma no invasiva, logrando un efecto lifting progresivo sin cirugía ni tiempo de recuperación.",
+      "Liposonic (Liposonix) utiliza ultrasonido focalizado de alta intensidad para destruir de forma selectiva las células de grasa localizada en una sola sesión por zona, sin cirugía ni anestesia. El cuerpo elimina la grasa tratada de forma natural en las semanas siguientes."
+    ],
+    effects: [
+      ["Enrojecimiento, sensación de frío o entumecimiento en la zona tratada (desaparece en horas).","Ligeros moratones o sensibilidad al tacto durante unos días.","Sensación de tensión o hinchazón moderada que remite en 1–2 semanas."],
+      ["Enrojecimiento y ligera sensación de calor en la zona tratada (desaparece en pocas horas).","Raramente, pequeñas ampollas o costras superficiales que cicatrizan solas en días.","Cambios temporales en la pigmentación de la piel, más frecuentes en pieles muy morenas."],
+      ["Leve enrojecimiento o calor local que desaparece en pocas horas.","Sensación de zumbido suave durante la sesión, completamente normal.","En casos puntuales, pequeña inflamación o sensibilidad táctil pasajera."],
+      ["Enrojecimiento y sensación de calor en la zona tratada, que remiten en horas.","Ligera inflamación o sensibilidad al tacto durante 24–48 horas.","En casos muy puntuales, pequeñas costras superficiales si la piel es especialmente sensible."],
+      ["Enrojecimiento temporal de la zona tratada que desaparece en pocas horas.","Moratones suaves (hematomas) en pieles más sensibles, que se resuelven solos en días.","Sensación de calor o ligera sensibilidad al tacto pasajera."],
+      ["Sensación de cansancio muscular similar al que se experimenta tras el ejercicio físico (normal y pasajero).","Leve enrojecimiento o calor local en la zona tratada.","Raramente, ligeros espasmos musculares durante la sesión, sin importancia clínica."],
+      ["Enrojecimiento y sensación de calor en la zona tratada durante las horas posteriores.","Leve hinchazón o sensibilidad al tacto que remite en 24–48 horas.","Hormigueo o sensación de pinchazos pasajera durante y después de la sesión."],
+      ["Enrojecimiento y sensación de calor en la zona tratada durante el día del tratamiento.","Hinchazón, sensibilidad al tacto o pequeños hematomas que remiten en 1–2 semanas.","Sensación de hormigueo o entumecimiento temporal en la zona tratada."]
+    ],
+    contra: [
+      "Informe a la especialista si presenta alguna de estas condiciones: embarazo o lactancia, alteraciones de la sensibilidad al frío (como crioglobulinemia o urticaria por frío), heridas abiertas o piel irritada en la zona, portadora de marcapasos u otros dispositivos electrónicos implantados, o si ha sido diagnosticada recientemente de cáncer.",
+      "Comuníquelo a la especialista si está embarazada o en periodo de lactancia, si ha tomado el sol intenso o usado cabinas de bronceado en las últimas 4 semanas, si toma medicación fotosensibilizante (algunos antibióticos, antiinflamatorios o isotretinoína), si padece vitíligo, lupus u otras enfermedades autoinmunes cutáneas, o si tiene tatuajes o maquillaje permanente en la zona a tratar.",
+      "Indíquelo a la especialista si está embarazada o en periodo de lactancia, si padece enfermedades hepáticas o renales (ya que el hígado y los riñones participan en la eliminación de la grasa), si tiene marcapasos u otros implantes electrónicos, si presenta hernias en la zona a tratar, o si está en tratamiento oncológico activo.",
+      "Comuníquelo a la especialista si está embarazada, si porta marcapasos, desfibrilador u otros implantes metálicos en la zona a tratar, si padece epilepsia, si tiene la piel especialmente sensible o enfermedades cutáneas activas en la zona, o si está en tratamiento oncológico activo.",
+      "Informe a la especialista si está embarazada o en periodo de lactancia, si tiene varices importantes, fragilidad capilar o trastornos de coagulación, si presenta heridas, irritaciones o infecciones cutáneas en la zona a tratar, si padece trombosis venosa profunda o ha tenido flebitis recientemente, o si está en tratamiento oncológico activo.",
+      "Comuníquelo a la especialista si está embarazada, si porta marcapasos, desfibrilador u otros implantes electrónicos o metálicos, si padece epilepsia, si ha tenido cirugías recientes en la zona a tratar, si presenta hernias abdominales, o si está en tratamiento oncológico activo.",
+      "Informe a la especialista si está embarazada o en periodo de lactancia, si tiene heridas abiertas, infecciones activas o acné inflamatorio severo en la zona a tratar, si porta marcapasos, desfibrilador u otros implantes electrónicos o metálicos, si padece enfermedades cutáneas graves o trastornos de la coagulación, o si está en tratamiento oncológico activo.",
+      "Informe a la especialista si está embarazada o en periodo de lactancia, si padece hernias abdominales o enfermedades hepáticas o renales, si tiene heridas abiertas o infecciones cutáneas en la zona a tratar, si porta marcapasos u otros implantes electrónicos, si presenta trastornos de la coagulación, o si está en tratamiento oncológico activo."
+    ]
+  },
+  ca: {
+    whatTxt: [
+      "La criolipòlisi és una tècnica no invasiva que aplica fred controlat sobre zones localitzades per reduir el greix subcutani de manera progressiva i natural. No requereix anestèsia ni temps de recuperació.",
+      "La depilació làser de díode actua sobre el pigment del pèl per reduir-lo de manera progressiva i duradora. És una de les tecnologies més segures i eficaces disponibles, amb resultats visibles des de les primeres sessions.",
+      "La cavitació utilitza ultrasons de baixa freqüència per trencar de manera selectiva les cèl·lules del greix localitzat, que el cos elimina de manera natural. És un tractament indolor i no invasiu per modelar la silueta.",
+      "La radiofreqüència genera calor a les capes profundes de la pell per estimular la producció de col·lagen i millorar la fermesa i l'elasticitat cutània. És un tractament reafirmant i antienvelliment molt ben tolerat.",
+      "La vacumteràpia aplica succió controlada sobre la pell per activar la circulació, millorar el drenatge limfàtic i treballar la cel·lulitis i la flaccidesa de manera natural i no invasiva. És relaxant i molt ben tolerada.",
+      "Body Sculp combina tecnologies d'última generació per modelar, tonificar i esculpir la silueta de manera no invasiva, estimulant la musculatura i reduint el greix localitzat de manera complementària.",
+      "El HIFU (Ultrasò Focalitzat d'Alta Intensitat) emet energia focalitzada en profunditat per estimular la producció de col·lagen i tensar la pell de manera no invasiva, aconseguint un efecte lífting progressiu sense cirurgia ni temps de recuperació.",
+      "Liposonic (Liposonix) utilitza ultrasò focalitzat d'alta intensitat per destruir de manera selectiva les cèl·lules de greix localitzat en una sola sessió per zona, sense cirurgia ni anestèsia. El cos elimina el greix tractat de manera natural en les setmanes següents."
+    ],
+    effects: [
+      ["Enrogiment, sensació de fred o entumiment a la zona tractada (desapareix en hores).","Lleugers blaus o sensibilitat al tacte durant uns dies.","Sensació de tensió o inflor moderada que remiteix en 1–2 setmanes."],
+      ["Enrogiment i lleugera sensació de calor a la zona tractada (desapareix en poques hores).","Rarament, petites butllofes o crostes superficials que cicatritzen soles en dies.","Canvis temporals en la pigmentació de la pell, més freqüents en pells molt fosques."],
+      ["Lleu enrogiment o calor local que desapareix en poques hores.","Sensació de brunzit suau durant la sessió, completament normal.","En casos puntuals, petita inflamació o sensibilitat tàctil passatgera."],
+      ["Enrogiment i sensació de calor a la zona tractada, que remiteixen en hores.","Lleugera inflamació o sensibilitat al tacte durant 24–48 hores.","En casos molt puntuals, petites crostes superficials si la pell és especialment sensible."],
+      ["Enrogiment temporal de la zona tractada que desapareix en poques hores.","Blaus suaus (hematomes) en pells més sensibles, que es resolen sols en dies.","Sensació de calor o lleugera sensibilitat al tacte passatgera."],
+      ["Sensació de cansament muscular semblant al que s'experimenta després de l'exercici físic (normal i passatgera).","Lleu enrogiment o calor local a la zona tractada.","Rarament, lleugers espasmes musculars durant la sessió, sense importància clínica."],
+      ["Enrogiment i sensació de calor a la zona tractada durant les hores posteriors.","Lleugera inflor o sensibilitat al tacte que remiteix en 24–48 hores.","Formigueig o sensació de punxades passatgera durant i després de la sessió."],
+      ["Enrogiment i sensació de calor a la zona tractada durant el dia del tractament.","Inflor, sensibilitat al tacte o petits hematomes que remiteixen en 1–2 setmanes.","Sensació de formigueig o entumiment temporal a la zona tractada."]
+    ],
+    contra: [
+      "Informi l'especialista si presenta alguna d'aquestes condicions: embaràs o lactància, alteracions de la sensibilitat al fred (com crioglobulinèmia o urticària pel fred), ferides obertes o pell irritada a la zona, portadora de marcapassos o altres dispositius electrònics implantats, o si ha estat diagnosticada recentment de càncer.",
+      "Comuniqui-ho a l'especialista si està embarassada o en període de lactància, si ha pres el sol intensament o ha usat cabines de bronzejat en les últimes 4 setmanes, si pren medicació fotosensibilitzant (alguns antibiòtics, antiinflamatoris o isotretinoïna), si pateix vitílig, lupus o altres malalties autoimmunes cutànies, o si té tatuatges o maquillatge permanent a la zona a tractar.",
+      "Indiqui-ho a l'especialista si està embarassada o en període de lactància, si pateix malalties hepàtiques o renals (ja que el fetge i els ronyons participen en l'eliminació del greix), si té marcapassos o altres implants electrònics, si presenta hèrnies a la zona a tractar, o si està en tractament oncològic actiu.",
+      "Comuniqui-ho a l'especialista si està embarassada, si porta marcapassos, desfibril·lador o altres implants metàl·lics a la zona a tractar, si pateix epilèpsia, si té la pell especialment sensible o malalties cutànies actives a la zona, o si està en tractament oncològic actiu.",
+      "Informi l'especialista si està embarassada o en període de lactància, si té varius importants, fragilitat capil·lar o trastorns de coagulació, si presenta ferides, irritacions o infeccions cutànies a la zona a tractar, si pateix trombosi venosa profunda o ha tingut flebitis recentment, o si està en tractament oncològic actiu.",
+      "Comuniqui-ho a l'especialista si està embarassada, si porta marcapassos, desfibril·lador o altres implants electrònics o metàl·lics, si pateix epilèpsia, si ha tingut cirurgies recents a la zona a tractar, si presenta hèrnies abdominals, o si està en tractament oncològic actiu.",
+      "Informi l'especialista si està embarassada o en període de lactància, si té ferides obertes, infeccions actives o acne inflamatori sever a la zona a tractar, si porta marcapassos, desfibril·lador o altres implants electrònics o metàl·lics, si pateix malalties cutànies greus o trastorns de la coagulació, o si està en tractament oncològic actiu.",
+      "Informi l'especialista si està embarassada o en període de lactància, si pateix hèrnies abdominals o malalties hepàtiques o renals, si té ferides obertes o infeccions cutànies a la zona a tractar, si porta marcapassos o altres implants electrònics, si presenta trastorns de la coagulació, o si està en tractament oncològic actiu."
+    ]
+  }
+};
+
+// ── STATE ──
+let currentLang = 'es';
+let currentTreat = -1;
+const NUM_TREATMENTS = 8;
+const canvasData = [null,null,null,null,null,null,null,null];
+const signed = [false,false,false,false,false,false,false,false];
+const submitted = [false,false,false,false,false,false,false,false];
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  // Set today's date on all inputs
+  const today = new Date().toISOString().split('T')[0];
+  for(let i=0;i<NUM_TREATMENTS;i++){
+    document.getElementById('inp'+i+'-date').value = today;
+    document.getElementById('date'+i).textContent = formatDate(new Date());
+  }
+  initCanvases();
+  setupCheckboxListeners();
+  applyLang('es');
+  updateSyncBanner();
+  maybeAutoSyncDrive();
+});
+
+function formatDate(d){
+  return d.toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+// ── LANGUAGE ──
+function setLang(lang){
+  currentLang = lang;
+  document.getElementById('btn-es').classList.toggle('active', lang==='es');
+  document.getElementById('btn-ca').classList.toggle('active', lang==='ca');
+  applyLang(lang);
+}
+
+function applyLang(lang){
+  const t = T[lang];
+  const c = CONTENT[lang];
+  document.getElementById('nav-title').textContent = t.navTitle;
+
+  // Treatment cards
+  const icons = ['❄️','✨','🔊','🌡️','💨','💪','🎯','🔥'];
+  for(let i=0;i<NUM_TREATMENTS;i++){
+    const card = document.getElementById('tc'+i);
+    card.querySelector('.icon').textContent = icons[i];
+    card.querySelector('.name').textContent = t.treatments[i];
+  }
+
+  // Each form
+  for(let i=0;i<NUM_TREATMENTS;i++){
+    el('h'+i+'-title').textContent = t.treatments[i];
+    el('h'+i+'-sub').textContent = t.infoSub[i];
+
+    // Section titles
+    elQ('#form'+i+' .section-title:nth-of-type(1)').textContent = t.sectionWhat;
+    const sectionTitles = document.querySelectorAll('#form'+i+' .section-title');
+    if(sectionTitles[0]) sectionTitles[0].textContent = t.sectionWhat;
+    if(sectionTitles[1]) sectionTitles[1].textContent = t.sectionEffects;
+    if(sectionTitles[2]) sectionTitles[2].textContent = t.sectionContra;
+
+    // Content
+    const whatId = 's'+i+'-what-txt';
+    if(document.getElementById(whatId)) document.getElementById(whatId).textContent = c.whatTxt[i];
+
+    // Effects list
+    const effList = document.getElementById('s'+i+'-effects-list');
+    if(effList){
+      effList.innerHTML = c.effects[i].map(e=>'<li>'+e+'</li>').join('');
+    }
+
+    // Contra
+    const contraBox = document.getElementById('s'+i+'-contra-box');
+    if(contraBox) contraBox.textContent = c.contra[i];
+
+    // Client data
+    document.getElementById('cd'+i+'-title').textContent = t.cdTitle;
+    document.getElementById('lbl'+i+'-name').textContent = t.lblName;
+    document.getElementById('lbl'+i+'-dni').textContent = t.lblDni;
+    document.getElementById('lbl'+i+'-date').textContent = t.lblDate;
+    document.getElementById('lbl'+i+'-phone').textContent = t.lblPhone;
+
+    // Checkboxes
+    document.getElementById('lbl'+i+'-info').innerHTML = t.chkInfo;
+    document.getElementById('lbl'+i+'-gdpr').innerHTML = t.chkGdpr;
+
+    // Signature
+    document.getElementById('sig'+i+'-title').textContent = t.sigTitle;
+    document.getElementById('sig'+i+'-label').textContent = t.sigLabel;
+    document.getElementById('hint'+i).innerHTML = '<span class="hint-icon">✍️</span>'+t.sigHint;
+    document.getElementById('btn'+i+'-clear').textContent = t.btnClear;
+    document.getElementById('submit'+i+'-txt').textContent = t.btnSubmit;
+  }
+
+  // Success
+  document.getElementById('successTitle').textContent = t.successTitle;
+  document.getElementById('successText').textContent = t.successText;
+  document.getElementById('btnNew').textContent = t.btnNew;
+}
+
+function el(id){ return document.getElementById(id); }
+function elQ(sel){ return document.querySelector(sel); }
+
+// ── TREATMENT SELECTION ──
+function selectTreat(idx){
+  currentTreat = idx;
+  for(let i=0;i<NUM_TREATMENTS;i++){
+    document.getElementById('tc'+i).classList.toggle('active', i===idx);
+    document.getElementById('form'+i).classList.toggle('visible', i===idx);
+  }
+  document.getElementById('successScreen').classList.remove('visible');
+  // Resize canvas now that the form is visible and has real dimensions
+  requestAnimationFrame(() => {
+    resizeCanvas(idx);
+    canvasReady[idx] = true;
+  });
+  document.querySelector('.consent-area').scrollIntoView({behavior:'smooth', block:'start'});
+  updateProgress();
+}
+
+// ── CANVAS SIGNATURE ──
+// Store per-canvas state outside setupCanvas so clearCanvas can access it
+const canvasCtx = {};
+const canvasHasMark = [false,false,false,false,false,false,false,false];
+const canvasReady = [false,false,false,false,false,false,false,false];
+
+function initCanvases(){
+  for(let i=0;i<NUM_TREATMENTS;i++){
+    setupCanvas(i);
+  }
+}
+
+function resizeCanvas(idx){
+  const canvas = document.getElementById('canvas'+idx);
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.parentElement.offsetWidth || 600;
+  const h = 180;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.strokeStyle = '#2a2118';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  canvasCtx[idx] = ctx;
+}
+
+function setupCanvas(idx){
+  const canvas = document.getElementById('canvas'+idx);
+  const hint = document.getElementById('hint'+idx);
+  let drawing = false;
+
+  // Don't resize now — canvas is hidden. Will resize on selectTreat.
+  // But attach events now.
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    if(e.touches) return {x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top};
+    return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+  }
+
+  function start(e){
+    e.preventDefault();
+    // Lazy init: resize if not yet done or width changed
+    if(!canvasReady[idx] || canvas.offsetWidth !== parseInt(canvas.style.width||'0')){
+      resizeCanvas(idx);
+      canvasReady[idx] = true;
+    }
+    const ctx = canvasCtx[idx];
+    drawing = true;
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    if(!canvasHasMark[idx]){ hint.style.opacity = '0'; canvasHasMark[idx] = true; }
+  }
+  function move(e){
+    if(!drawing) return;
+    e.preventDefault();
+    const ctx = canvasCtx[idx];
+    if(!ctx) return;
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  }
+  function end(e){
+    if(!drawing) return;
+    drawing = false;
+    signed[idx] = canvasHasMark[idx];
+    checkSubmitReady(idx);
+  }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  canvas.addEventListener('mouseup', end);
+  canvas.addEventListener('mouseleave', end);
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', end);
+}
+
+function clearCanvas(idx){
+  const canvas = document.getElementById('canvas'+idx);
+  if(canvasCtx[idx]){
+    const dpr = window.devicePixelRatio || 1;
+    canvasCtx[idx].clearRect(0, 0, canvas.width / dpr * dpr, canvas.height / dpr * dpr);
+  }
+  canvasHasMark[idx] = false;
+  signed[idx] = false;
+  document.getElementById('hint'+idx).style.opacity = '1';
+  checkSubmitReady(idx);
+}
+
+// ── CHECKBOX LISTENERS ──
+function setupCheckboxListeners(){
+  for(let i=0;i<NUM_TREATMENTS;i++){
+    document.getElementById('chk'+i+'-info').addEventListener('change', ()=>checkSubmitReady(i));
+    document.getElementById('chk'+i+'-gdpr').addEventListener('change', ()=>checkSubmitReady(i));
+  }
+}
+
+function checkSubmitReady(idx){
+  const info = document.getElementById('chk'+idx+'-info').checked;
+  const gdpr = document.getElementById('chk'+idx+'-gdpr').checked;
+  const name = document.getElementById('inp'+idx+'-name').value.trim();
+  const btn = document.getElementById('submit'+idx);
+  btn.disabled = !(info && gdpr && signed[idx] && name.length > 2);
+}
+
+// Add name input listeners
+document.addEventListener('DOMContentLoaded', ()=>{
+  for(let i=0;i<NUM_TREATMENTS;i++){
+    document.getElementById('inp'+i+'-name').addEventListener('input', ()=>checkSubmitReady(i));
+  }
+});
+
+// ── SUBMIT ──
+async function submitForm(idx){
+  const name = document.getElementById('inp'+idx+'-name').value.trim();
+  const dni  = document.getElementById('inp'+idx+'-dni').value.trim();
+  const date = document.getElementById('inp'+idx+'-date').value;
+  const phone= document.getElementById('inp'+idx+'-phone').value.trim();
+  if(!name){ alert('Por favor, introduce el nombre del cliente.'); return; }
+
+  const btn = document.getElementById('submit'+idx);
+  const origHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> <span>' + (currentLang==='es'?'Generando PDF...':'Generant PDF...') + '</span>';
+
+  try {
+    const pdfBase64 = await generatePDF(idx, name, dni, date, phone);
+    const filename  = buildFilename(idx, name, dni, date);
+
+    // Save locally first — this is now the source of truth on the tablet
+    saveConsentLocal({
+      id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+      filename, pdfBase64, treatIdx: idx, name, dni, date, phone,
+      createdAt: new Date().toISOString(),
+      uploaded: false
+    });
+
+    // Open PDF in new tab (works on iOS Safari) so it can still be shared/printed manually if needed
+    const bytes = atob(pdfBase64);
+    const arr = new Uint8Array(bytes.length);
+    for(let i=0;i<bytes.length;i++) arr[i] = bytes.charCodeAt(i);
+    const blob = new Blob([arr], {type:'application/pdf'});
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, '_blank');
+
+    // Update success message with filename
+    document.getElementById('successText').textContent =
+      currentLang === 'es'
+        ? 'El PDF se ha guardado en este dispositivo y se ha abierto en una nueva pestaña. Se subirá a Drive automáticamente en la próxima sincronización semanal.'
+        : 'El PDF s\'ha desat en aquest dispositiu i s\'ha obert en una nova pestanya. Es pujarà a Drive automàticament en la propera sincronització setmanal.';
+
+    updateSyncBanner();
+
+    // Show success
+    for(let i=0;i<NUM_TREATMENTS;i++) document.getElementById('form'+i).classList.remove('visible');
+    document.getElementById('successScreen').classList.add('visible');
+    submitted[idx] = true;
+    document.getElementById('tc'+idx).classList.add('done');
+    document.getElementById('tc'+idx).classList.remove('active');
+    currentTreat = -1;
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+
+  } catch(err){
+    console.error('Error completo:', err);
+    alert('Error al generar el PDF: ' + (err.message || err));
+    btn.disabled = false;
+    btn.innerHTML = origHTML;
+  }
+}
+
+// ── BUILD FILENAME ──
+function buildFilename(idx, name, dni, date){
+  const lang = currentLang;
+  const treatNames = {
+    es: ['Criolipólisis','DepilacionLaser','Cavitación','Radiofrecuencia','Vacumterapia','BodySculp','HIFU','Liposonic'],
+    ca: ['Criolipòlisi','DepilacióLàser','Cavitació','Radiofreqüència','Vacumteràpia','BodySculp','HIFU','Liposonic']
+  };
+  const treat = treatNames[lang][idx].replace(/[^a-zA-Z0-9À-ÿ]/g,'');
+  const safeName = name.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9À-ÿ_]/g,'');
+  const safeDni  = (dni||'SinDNI').replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
+  const safeDate = (date||new Date().toISOString().split('T')[0]).replace(/-/g,'');
+  return `${safeDni}_${safeName}_${treat}_${safeDate}.pdf`;
+}
+
+// ── HELPERS ──
+function cleanText(str){
+  return (str||'')
+    .replace(/[\u2013\u2014]/g,'-')
+    .replace(/[\u2018\u2019]/g,"'")
+    .replace(/[\u201c\u201d]/g,'"')
+    .replace(/\u00b7/g,'.')   // middle dot
+    .replace(/\u00e0/g,'a').replace(/\u00e1/g,'a').replace(/\u00e2/g,'a').replace(/\u00e3/g,'a').replace(/\u00e4/g,'a')
+    .replace(/\u00e8/g,'e').replace(/\u00e9/g,'e').replace(/\u00ea/g,'e').replace(/\u00eb/g,'e')
+    .replace(/\u00ec/g,'i').replace(/\u00ed/g,'i').replace(/\u00ee/g,'i').replace(/\u00ef/g,'i')
+    .replace(/\u00f2/g,'o').replace(/\u00f3/g,'o').replace(/\u00f4/g,'o').replace(/\u00f6/g,'o')
+    .replace(/\u00f9/g,'u').replace(/\u00fa/g,'u').replace(/\u00fb/g,'u').replace(/\u00fc/g,'u')
+    .replace(/\u00c0/g,'A').replace(/\u00c1/g,'A').replace(/\u00c8/g,'E').replace(/\u00c9/g,'E')
+    .replace(/\u00cc/g,'I').replace(/\u00cd/g,'I').replace(/\u00d2/g,'O').replace(/\u00d3/g,'O')
+    .replace(/\u00d9/g,'U').replace(/\u00da/g,'U')
+    .replace(/\u00f1/g,'n').replace(/\u00d1/g,'N')
+    .replace(/\u00e7/g,'c').replace(/\u00c7/g,'C')
+    .replace(/\u00fc/g,'u').replace(/\u00ef/g,'i')
+    .replace(/\u00b7/g,'.').replace(/\u2022/g,'-')
+    .replace(/[^\x20-\x7E]/g,'?');
+}
+
+// ── GENERATE PDF ──
+async function generatePDF(idx, name, dni, date, phone){
+  // Load jsPDF
+  if(!window.jspdf){
+    await new Promise((res,rej)=>{
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const m = 18;
+  const cw = 174; // content width
+  const lang = currentLang;
+  const Tc = T[lang];
+  const Cc = CONTENT[lang];
+
+  // ── Step 1: Header ──
+  doc.setFillColor(42,33,24);
+  doc.rect(0,0,210,28,'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.setTextColor(250,247,242);
+  doc.text('Pellbellafranqueses', m, 12);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(212,184,150);
+  doc.text("Placa de l'Espolsada, Local 7  |  pellbellafranqueses@gmail.com  |  NIF: 52149388Q", m, 19);
+
+  // ── Step 2: Subtitle bar ──
+  doc.setFillColor(90,78,60);
+  doc.rect(0,28,210,14,'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(14);
+  doc.setTextColor(250,247,242);
+  doc.text(cleanText(Tc.treatments[idx]) + ' - ' + (lang==='es'?'Consentimiento Informado':'Consentiment Informat'), m, 38);
+
+  let y = 52;
+
+  // ── Step 3: Section helper ──
+  function sec(txt){
+    doc.setFillColor(242,237,228);
+    doc.rect(m-2, y-5, cw+4, 8,'F');
+    doc.setDrawColor(184,151,106);
+    doc.setLineWidth(0.4);
+    doc.line(m-2,y-5,m-2,y+3);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10);
+    doc.setTextColor(42,33,24);
+    doc.text(cleanText(txt), m+2, y);
+    y += 9;
+  }
+
+  function para(txt){
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(61,52,40);
+    const lines = doc.splitTextToSize(cleanText(txt), cw);
+    if(y + lines.length*5 > 272){ doc.addPage(); y=20; }
+    doc.text(lines, m, y);
+    y += lines.length*5 + 2;
+  }
+
+  // ── Step 4: Content ──
+  sec(Tc.sectionWhat);
+  para(Cc.whatTxt[idx]);
+  y += 2;
+
+  sec(Tc.sectionEffects);
+  Cc.effects[idx].forEach(e => para('- ' + e));
+  y += 2;
+
+  sec(Tc.sectionContra);
+  // Contra box
+  const cLines = doc.splitTextToSize(cleanText(Cc.contra[idx]), cw-8);
+  const cH = cLines.length*5+8;
+  if(y+cH>272){ doc.addPage(); y=20; }
+  doc.setFillColor(253,249,242);
+  doc.setDrawColor(184,151,106);
+  doc.setLineWidth(0.5);
+  doc.rect(m, y, cw, cH,'FD');
+  doc.line(m,y,m,y+cH);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(9);
+  doc.setTextColor(90,78,60);
+  doc.text(cLines, m+5, y+5);
+  y += cH + 8;
+
+  // ── Step 5: Client data box ──
+  if(y+36>272){ doc.addPage(); y=20; }
+  doc.setFillColor(242,237,228);
+  doc.rect(m, y, cw, 34,'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(9);
+  doc.setTextColor(42,33,24);
+  doc.text(cleanText(Tc.cdTitle), m+3, y+7);
+  doc.setFont('helvetica','normal');
+  doc.setTextColor(61,52,40);
+  doc.text(cleanText(Tc.lblName)+': '+cleanText(name), m+3, y+15);
+  doc.text(cleanText(Tc.lblDni)+': '+cleanText(dni||'-'), m+3, y+22);
+  doc.text(cleanText(Tc.lblDate)+': '+cleanText(date||'-'), m+3+cw/2, y+15);
+  doc.text(cleanText(Tc.lblPhone)+': '+cleanText(phone||'-'), m+3+cw/2, y+22);
+  y += 40;
+
+  // ── Step 6: Checkboxes ──
+  const lbl1 = cleanText(Tc.chkInfo.replace(/<[^>]+>/g,''));
+  const lbl2 = cleanText(Tc.chkGdpr.replace(/<[^>]+>/g,''));
+
+  function chkBox(label){
+    if(y+20>272){ doc.addPage(); y=20; }
+    doc.setFillColor(106,158,122);
+    doc.rect(m, y-3.5, 4.5, 4.5,'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.setTextColor(255,255,255);
+    doc.text('OK', m+0.4, y-0.3);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(61,52,40);
+    const ls = doc.splitTextToSize(label, cw-8);
+    doc.text(ls, m+7, y);
+    y += ls.length*4.5 + 5;
+  }
+
+  chkBox(lbl1);
+  chkBox(lbl2);
+  y += 3;
+
+  // ── Step 7: Signature ──
+  if(y+52>272){ doc.addPage(); y=20; }
+  doc.setDrawColor(200,190,175);
+  doc.setLineWidth(0.3);
+  doc.rect(m, y, cw, 50);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(9);
+  doc.setTextColor(90,78,60);
+  doc.text(cleanText(Tc.sigTitle), m+2, y+8);
+
+  // Embed signature
+  const sigCanvas = document.getElementById('canvas'+idx);
+  if(sigCanvas && canvasHasMark[idx]){
+    const off = document.createElement('canvas');
+    off.width  = sigCanvas.width;
+    off.height = sigCanvas.height;
+    const octx = off.getContext('2d');
+    octx.fillStyle = '#fff';
+    octx.fillRect(0,0,off.width,off.height);
+    octx.drawImage(sigCanvas,0,0);
+    const imgData = off.toDataURL('image/jpeg',0.85);
+    // addImage(data, format, x, y, w, h)
+    doc.addImage(imgData,'JPEG', m+2, y+12, cw-4, 33);
+  }
+
+  doc.setDrawColor(184,151,106);
+  doc.setLineWidth(0.4);
+  doc.line(m+2, y+48, m+80, y+48);
+  y += 54;
+
+  // ── Step 8: Footer on every page ──
+  const np = doc.internal.getNumberOfPages();
+  for(let p=1;p<=np;p++){
+    doc.setPage(p);
+    doc.setFillColor(42,33,24);
+    doc.rect(0,287,210,10,'F');
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(7);
+    doc.setTextColor(184,151,106);
+    doc.text('Pellbellafranqueses - NIF 52149388Q - pellbellafranqueses@gmail.com', m, 293);
+    doc.text('Pag '+p+'/'+np, 192, 293, {align:'right'});
+  }
+
+  return doc.output('datauristring').split(',')[1];
+}
+
+function resetForm(){
+  document.getElementById('successScreen').classList.remove('visible');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function updateProgress(){
+  const done = submitted.filter(Boolean).length;
+  document.getElementById('progressFill').style.width = (done/NUM_TREATMENTS*100)+'%';
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// ── ALMACENAMIENTO LOCAL + SINCRONIZACIÓN SEMANAL CON DRIVE ──
+// ══════════════════════════════════════════════════════════════
+const DRIVE_ROOT_FOLDER_ID = '1UripxWK7_odZVXwebYSqcTm_P1eulg4D'; // misma carpeta que usa pellbella_v67 (fotos antes/después)
+const GOOGLE_CLIENT_ID  = '222092304932-62812m1v1o8o64q7h1e1bbni7b3g0n6p.apps.googleusercontent.com';
+const DRIVE_SCOPE       = 'https://www.googleapis.com/auth/drive.file';
+const STORAGE_KEY       = 'pellbella_consentimientos_v1';
+const LAST_SYNC_KEY     = 'pellbella_last_drive_sync_v1';
+const SYNC_INTERVAL_MS  = 7 * 24 * 60 * 60 * 1000; // 7 días
+
+let gisTokenClient = null;
+
+// ── Lectura / escritura del almacén local ──
+function getConsentStore(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e){
+    console.error('Error leyendo almacén local:', e);
+    return [];
+  }
+}
+
+function saveConsentStore(list){
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    return true;
+  } catch(e){
+    console.error('Error guardando en almacén local (¿espacio lleno?):', e);
+    alert(currentLang==='es'
+      ? 'No se ha podido guardar el consentimiento en el dispositivo (almacenamiento lleno). Avisa a soporte.'
+      : 'No s\'ha pogut desar el consentiment al dispositiu (emmagatzematge ple). Avisa suport.');
+    return false;
+  }
+}
+
+function saveConsentLocal(record){
+  const list = getConsentStore();
+  list.push(record);
+  saveConsentStore(list);
+}
+
+function pendingConsents(){
+  return getConsentStore().filter(r => !r.uploaded);
+}
+
+function markConsentUploaded(id){
+  const list = getConsentStore();
+  const rec = list.find(r => r.id === id);
+  if(rec){ rec.uploaded = true; rec.uploadedAt = new Date().toISOString(); }
+  saveConsentStore(list);
+}
+
+function getLastSync(){
+  const v = localStorage.getItem(LAST_SYNC_KEY);
+  return v ? new Date(v) : null;
+}
+
+function setLastSync(date){
+  localStorage.setItem(LAST_SYNC_KEY, date.toISOString());
+}
+
+// ── Banner de estado ──
+function updateSyncBanner(){
+  const pending = pendingConsents().length;
+  const banner = document.getElementById('syncBanner');
+  const text = document.getElementById('syncBannerText');
+  if(pending > 0){
+    text.textContent = currentLang === 'es'
+      ? `${pending} consentimiento(s) pendiente(s) de subir a Drive.`
+      : `${pending} consentiment(s) pendent(s) de pujar a Drive.`;
+    banner.classList.add('visible');
+  } else {
+    banner.classList.remove('visible');
+  }
+}
+
+// ── Carga diferida de Google Identity Services ──
+function loadGis(){
+  return new Promise((resolve, reject) => {
+    if(window.google && window.google.accounts && window.google.accounts.oauth2){ resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+function getAccessToken(interactive){
+  return new Promise(async (resolve, reject) => {
+    try { await loadGis(); } catch(e){ reject(e); return; }
+    if(!gisTokenClient){
+      gisTokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: DRIVE_SCOPE,
+        callback: () => {} // se sobreescribe en cada llamada
+      });
+    }
+    gisTokenClient.callback = (resp) => {
+      if(resp && resp.access_token) resolve(resp.access_token);
+      else reject(resp);
+    };
+    gisTokenClient.requestAccessToken({ prompt: interactive ? 'consent' : '' });
+  });
+}
+
+// ── Buscar o crear una carpeta por nombre dentro de un padre dado ──
+async function findOrCreateFolder(token, name, parentId){
+  const q = encodeURIComponent(`name='${name.replace(/'/g,"\\'")}' and mimeType='application/vnd.google-apps.folder' and '${parentId}' in parents and trashed=false`);
+  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`, {
+    headers: { Authorization: 'Bearer ' + token }
+  });
+  const d = await r.json();
+  if(d.files && d.files.length > 0) return d.files[0].id;
+  const c = await fetch('https://www.googleapis.com/drive/v3/files', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, mimeType: 'application/vnd.google-apps.folder', parents: [parentId] })
+  });
+  return (await c.json()).id;
+}
+
+// ── Buscar (o crear) la carpeta de la clienta, emparejando SOLO por teléfono ──
+// El nombre de la carpeta puede llevar "Nombre_Telefono" para que sea legible en
+// Drive, pero la búsqueda de una carpeta ya existente se hace únicamente por el
+// teléfono (contenido en el nombre), así evitamos duplicados por tildes/mayúsculas
+// distintas al escribir el nombre en cada app. Misma lógica en pellbella_v68.html.
+async function findOrCreateClientFolder(token, nombre, telefono, parentId){
+  const nom = (nombre || '').trim();
+  const tel = (telefono || '').trim();
+
+  if(tel){
+    const q = encodeURIComponent(
+      `mimeType='application/vnd.google-apps.folder' and '${parentId}' in parents and trashed=false and name contains '${tel.replace(/'/g,"\\'")}'`
+    );
+    const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`, {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const d = await r.json();
+    if(d.files && d.files.length > 0) return d.files[0].id; // carpeta ya existente de esa clienta
+  }
+
+  // No existe todavía (o no hay teléfono): crear una nueva, nombrada de forma legible
+  const folderName = nom + (tel ? '_' + tel : '');
+  const c = await fetch('https://www.googleapis.com/drive/v3/files', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: folderName, mimeType: 'application/vnd.google-apps.folder', parents: [parentId] })
+  });
+  return (await c.json()).id;
+}
+
+// ── Resolver la carpeta "Consentimientos" de la clienta ──
+async function resolveClientConsentFolder(token, record){
+  const clientFolderId = await findOrCreateClientFolder(token, record.name, record.phone, DRIVE_ROOT_FOLDER_ID);
+  const consentFolderId = await findOrCreateFolder(token, 'Consentimientos', clientFolderId);
+  return consentFolderId;
+}
+
+// ── Subida a Drive (multipart: metadata + PDF) ──
+async function uploadRecordToDrive(record, token){
+  const targetFolderId = await resolveClientConsentFolder(token, record);
+  const metadata = {
+    name: record.filename,
+    parents: [targetFolderId],
+    mimeType: 'application/pdf'
+  };
+  const boundary = 'pellbella_boundary_' + Date.now();
+  const body =
+    `--${boundary}\r\n` +
+    'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+    JSON.stringify(metadata) + '\r\n' +
+    `--${boundary}\r\n` +
+    'Content-Type: application/pdf\r\n' +
+    'Content-Transfer-Encoding: base64\r\n\r\n' +
+    record.pdfBase64 + '\r\n' +
+    `--${boundary}--`;
+
+  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'multipart/related; boundary=' + boundary
+    },
+    body
+  });
+  if(!res.ok){
+    const errText = await res.text();
+    throw new Error('Drive API ' + res.status + ': ' + errText);
+  }
+  return res.json();
+}
+
+async function uploadAllPending(token){
+  const pending = pendingConsents();
+  let okCount = 0, failCount = 0;
+  for(const record of pending){
+    try {
+      await uploadRecordToDrive(record, token);
+      markConsentUploaded(record.id);
+      okCount++;
+    } catch(e){
+      console.error('Fallo subiendo ' + record.filename + ':', e);
+      failCount++;
+    }
+  }
+  updateSyncBanner();
+  return { okCount, failCount };
+}
+
+// ── Sincronización automática (silenciosa) cada 7 días al abrir la app ──
+async function maybeAutoSyncDrive(){
+  const pending = pendingConsents();
+  if(pending.length === 0) return;
+
+  const last = getLastSync();
+  const due = !last || (Date.now() - last.getTime() >= SYNC_INTERVAL_MS);
+  if(!due) return;
+
+  try {
+    const token = await getAccessToken(false); // intento silencioso, sin popup
+    const { okCount, failCount } = await uploadAllPending(token);
+    setLastSync(new Date());
+    console.log(`Sincronización automática con Drive: ${okCount} subidos, ${failCount} fallidos.`);
+  } catch(e){
+    // No se pudo autenticar en silencio (sesión de Google no activa en el dispositivo).
+    // No marcamos setLastSync para que se reintente en la próxima apertura, y mostramos el botón manual.
+    console.warn('Sincronización automática no disponible, se requiere autorización manual:', e);
+    updateSyncBanner();
+  }
+}
+
+// ── Botón manual de sincronización (fallback si la silenciosa falla) ──
+async function manualDriveSync(){
+  const btn = document.getElementById('syncBannerBtn');
+  const origText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = currentLang === 'es' ? 'Subiendo...' : 'Pujant...';
+  try {
+    const token = await getAccessToken(true); // popup de consentimiento si hace falta
+    const { okCount, failCount } = await uploadAllPending(token);
+    setLastSync(new Date());
+    alert(currentLang === 'es'
+      ? `Sincronización completada: ${okCount} subidos, ${failCount} con error.`
+      : `Sincronització completada: ${okCount} pujats, ${failCount} amb error.`);
+  } catch(e){
+    console.error('Error en sincronización manual:', e);
+    alert(currentLang === 'es'
+      ? 'No se ha podido conectar con Google Drive. Inténtalo de nuevo.'
+      : 'No s\'ha pogut connectar amb Google Drive. Torna-ho a provar.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = origText;
+  }
+}
+</script>
+</body>
+</html>
